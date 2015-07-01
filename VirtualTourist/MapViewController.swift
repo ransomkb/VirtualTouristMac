@@ -50,7 +50,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         fetchedResultsController.performFetch(&error)
         
         if let error = error {
-            println("Error performing initial fetch: \(error)")
+            alertMessage = "Error performing initial fetch: \(error)"
+            
+            println(alertMessage)
+            alertUser()
         }
         
         fetchedResultsController.delegate = self
@@ -67,7 +70,22 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         
         locationManager.startUpdatingLocation()
         
-        
+        if let annotations = self.mapView.annotations {
+            self.mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
+            
+            var error: NSError?
+            
+            if fetchedResultsController.performFetch(&error) {
+                if let error = error {
+                    alertMessage = "Error performing initial fetch: \(error)"
+                    
+                    println(alertMessage)
+                    alertUser()
+                }
+                
+                self.mapView.addAnnotations(fetchedResultsController.fetchedObjects)
+            }
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -77,7 +95,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     
     override func viewWillDisappear(animated: Bool) {
         locationManager.stopUpdatingLocation()
-        //showLocationUI = true
         
         super.viewWillDisappear(animated)
     }
