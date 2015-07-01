@@ -9,11 +9,20 @@
 /* Begin PBXBuildFile section */
 		D45525F71B40F938004ADE62 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45525F61B40F938004ADE62 /* AppDelegate.swift */; };
 		D45525FA1B40F938004ADE62 /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D45525F81B40F938004ADE62 /* VirtualTourist.xcdatamodeld */; };
-		D45525FC1B40F938004ADE62 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45525FB1B40F938004ADE62 /* ViewController.swift */; };
 		D45525FF1B40F938004ADE62 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D45525FD1B40F938004ADE62 /* Main.storyboard */; };
 		D45526011B40F938004ADE62 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D45526001B40F938004ADE62 /* Images.xcassets */; };
 		D45526041B40F938004ADE62 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D45526021B40F938004ADE62 /* LaunchScreen.xib */; };
 		D45526101B40F938004ADE62 /* VirtualTouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D455260F1B40F938004ADE62 /* VirtualTouristTests.swift */; };
+		D455261D1B40FA10004ADE62 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D455261C1B40FA10004ADE62 /* MapKit.framework */; };
+		D455261F1B40FA18004ADE62 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D455261E1B40FA18004ADE62 /* CoreLocation.framework */; };
+		D45526231B40FAE4004ADE62 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526221B40FAE4004ADE62 /* CollectionViewController.swift */; };
+		D45526251B40FB46004ADE62 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526241B40FB46004ADE62 /* Pin.swift */; };
+		D45526271B40FBD4004ADE62 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526261B40FBD4004ADE62 /* Photo.swift */; };
+		D45526291B40FCF7004ADE62 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526281B40FCF7004ADE62 /* MapViewController.swift */; };
+		D45526361B4101FE004ADE62 /* PinPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526351B4101FE004ADE62 /* PinPhotos.swift */; };
+		D45526381B41024E004ADE62 /* PinPhotosConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526371B41024E004ADE62 /* PinPhotosConstants.swift */; };
+		D455263C1B410834004ADE62 /* MapVCExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D455263B1B410834004ADE62 /* MapVCExtension.swift */; };
+		D455263E1B4126BC004ADE62 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,13 +40,22 @@
 		D45525F51B40F938004ADE62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D45525F61B40F938004ADE62 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D45525F91B40F938004ADE62 /* VirtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirtualTourist.xcdatamodel; sourceTree = "<group>"; };
-		D45525FB1B40F938004ADE62 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D45525FE1B40F938004ADE62 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D45526001B40F938004ADE62 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D45526031B40F938004ADE62 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		D45526091B40F938004ADE62 /* VirtualTouristTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VirtualTouristTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D455260E1B40F938004ADE62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D455260F1B40F938004ADE62 /* VirtualTouristTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualTouristTests.swift; sourceTree = "<group>"; };
+		D455261C1B40FA10004ADE62 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		D455261E1B40FA18004ADE62 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		D45526221B40FAE4004ADE62 /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		D45526241B40FB46004ADE62 /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
+		D45526261B40FBD4004ADE62 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		D45526281B40FCF7004ADE62 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		D45526351B4101FE004ADE62 /* PinPhotos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinPhotos.swift; sourceTree = "<group>"; };
+		D45526371B41024E004ADE62 /* PinPhotosConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinPhotosConstants.swift; sourceTree = "<group>"; };
+		D455263B1B410834004ADE62 /* MapVCExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapVCExtension.swift; sourceTree = "<group>"; };
+		D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStackManager.swift; path = "../../../../../Git Stuff/Udacity/Project 4/step-5.4/CoreDataFavoriteActors/FavoriteActors/CoreDataStackManager.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +63,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D455261F1B40FA18004ADE62 /* CoreLocation.framework in Frameworks */,
+				D455261D1B40FA10004ADE62 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +81,8 @@
 		D45525E81B40F938004ADE62 = {
 			isa = PBXGroup;
 			children = (
+				D455261E1B40FA18004ADE62 /* CoreLocation.framework */,
+				D455261C1B40FA10004ADE62 /* MapKit.framework */,
 				D45525F31B40F938004ADE62 /* VirtualTourist */,
 				D455260C1B40F938004ADE62 /* VirtualTouristTests */,
 				D45525F21B40F938004ADE62 /* Products */,
@@ -79,12 +101,10 @@
 		D45525F31B40F938004ADE62 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
-				D45525F61B40F938004ADE62 /* AppDelegate.swift */,
-				D45525FB1B40F938004ADE62 /* ViewController.swift */,
-				D45525FD1B40F938004ADE62 /* Main.storyboard */,
+				D455261A1B40F9C4004ADE62 /* Model */,
+				D45526191B40F94E004ADE62 /* Controller */,
+				D455261B1B40F9D0004ADE62 /* View */,
 				D45526001B40F938004ADE62 /* Images.xcassets */,
-				D45526021B40F938004ADE62 /* LaunchScreen.xib */,
-				D45525F81B40F938004ADE62 /* VirtualTourist.xcdatamodeld */,
 				D45525F41B40F938004ADE62 /* Supporting Files */,
 			);
 			path = VirtualTourist;
@@ -113,6 +133,39 @@
 				D455260E1B40F938004ADE62 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D45526191B40F94E004ADE62 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				D45526281B40FCF7004ADE62 /* MapViewController.swift */,
+				D455263B1B410834004ADE62 /* MapVCExtension.swift */,
+				D45526221B40FAE4004ADE62 /* CollectionViewController.swift */,
+				D45525F61B40F938004ADE62 /* AppDelegate.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		D455261A1B40F9C4004ADE62 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D45526241B40FB46004ADE62 /* Pin.swift */,
+				D45526261B40FBD4004ADE62 /* Photo.swift */,
+				D45526351B4101FE004ADE62 /* PinPhotos.swift */,
+				D45526371B41024E004ADE62 /* PinPhotosConstants.swift */,
+				D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */,
+				D45525F81B40F938004ADE62 /* VirtualTourist.xcdatamodeld */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		D455261B1B40F9D0004ADE62 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D45525FD1B40F938004ADE62 /* Main.storyboard */,
+				D45526021B40F938004ADE62 /* LaunchScreen.xib */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -215,9 +268,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D45525FC1B40F938004ADE62 /* ViewController.swift in Sources */,
+				D45526271B40FBD4004ADE62 /* Photo.swift in Sources */,
 				D45525FA1B40F938004ADE62 /* VirtualTourist.xcdatamodeld in Sources */,
+				D45526251B40FB46004ADE62 /* Pin.swift in Sources */,
+				D455263E1B4126BC004ADE62 /* CoreDataStackManager.swift in Sources */,
+				D45526291B40FCF7004ADE62 /* MapViewController.swift in Sources */,
+				D45526381B41024E004ADE62 /* PinPhotosConstants.swift in Sources */,
 				D45525F71B40F938004ADE62 /* AppDelegate.swift in Sources */,
+				D455263C1B410834004ADE62 /* MapVCExtension.swift in Sources */,
+				D45526361B4101FE004ADE62 /* PinPhotos.swift in Sources */,
+				D45526231B40FAE4004ADE62 /* CollectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +473,7 @@
 				D45526151B40F938004ADE62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D45526161B40F938004ADE62 /* Build configuration list for PBXNativeTarget "VirtualTouristTests" */ = {
 			isa = XCConfigurationList;
@@ -421,6 +482,7 @@
 				D45526181B40F938004ADE62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
