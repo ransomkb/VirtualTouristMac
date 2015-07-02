@@ -90,13 +90,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         super.viewWillDisappear(animated)
         //deleteAllPins()
         println("View will disappear")
+        // Ensure the coordinates of any dragged pins are updated.
+        CoreDataStackManager.sharedInstance().saveContext()
     }
     
     @IBAction func longPressed(sender: AnyObject) {
         if longPress.state == .Began {
             println("Long Press Began")
-            let point: CGPoint = sender.locationInView(mapView)
+            let point: CGPoint = longPress.locationInView(mapView)
             let fingerLocation: CLLocationCoordinate2D = mapView.convertPoint(point, toCoordinateFromView: mapView)
+            println("Finger lat: \(fingerLocation.latitude)")
+            println("Finger lon: \(fingerLocation.longitude)")
+            
             let pinLocation = CLLocation(latitude: fingerLocation.latitude, longitude: fingerLocation.longitude)
             
             CLGeocoder().reverseGeocodeLocation(pinLocation, completionHandler: {(placemarks, error) -> Void in

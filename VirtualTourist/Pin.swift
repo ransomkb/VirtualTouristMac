@@ -24,14 +24,22 @@ class Pin: NSManagedObject, MKAnnotation {
     
     @NSManaged var title: String
     @NSManaged var address: String
-    @NSManaged var latitude: NSNumber
-    @NSManaged var longitude: NSNumber
+    @NSManaged var latitude: Double
+    @NSManaged var longitude: Double
     
     var coordinate: CLLocationCoordinate2D {
-        let lat: CLLocationDegrees = latitude as! Double
-        let lon: CLLocationDegrees = longitude as! Double
-        var coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-        return coords
+        get {
+            let lat: CLLocationDegrees = latitude
+            let lon: CLLocationDegrees = longitude
+            var coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+            return coords
+        }
+        
+        set {
+            latitude = newValue.latitude
+            longitude = newValue.longitude
+            updateAddress()
+        }
     }
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
@@ -45,8 +53,15 @@ class Pin: NSManagedObject, MKAnnotation {
         
         title = dictionary[Keys.Title] as! String
         address = dictionary[Keys.Address] as! String
-        latitude = dictionary[Keys.Latitude] as! CLLocationDegrees
-        longitude = dictionary[Keys.Longitude] as! CLLocationDegrees
+        latitude = dictionary[Keys.Latitude] as! Double
+        longitude = dictionary[Keys.Longitude] as! Double
+        
+        println("Title: \(title)")
+        println("Address: \(address)")
+        println("Latitude: \(latitude)")
+        println("Longitude: \(longitude)")
+        println("Coordinate lat: \(coordinate.latitude)")
+        println("Coordinate lon: \(coordinate.longitude)")
     }
     
     var subtitle: String {
@@ -64,5 +79,24 @@ class Pin: NSManagedObject, MKAnnotation {
         return mapItem
     }
     
+    func updateAddress() {
+        let pinLocation = CLLocation(latitude: latitude, longitude: longitude)
         
+        CLGeocoder().reverseGeocodeLocation(pinLocation, completionHandler: {(placemarks, error) -> Void in
+            if (error != nil) {
+                let message = "Reverse geocoder for Pin failed with error: " + error.localizedDescription
+                println("\(message)")
+                
+                return
+            }
+
+            if placemarks.count > 0 {
+                let place = placemarks[0] as! CLPlacemark
+                self.title = "\(place.administrativeArea)"
+                self.address = "\(place.locality), \(place.administrativeArea)  \(place.country)"
+                println("\(self.address)")
+            }
+        })
+    }
+    
 }

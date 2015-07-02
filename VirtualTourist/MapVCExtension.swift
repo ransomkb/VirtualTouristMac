@@ -23,6 +23,7 @@ extension MapViewController: MKMapViewDelegate {
                 view.canShowCallout = true
                 view.calloutOffset = CGPoint(x: -5, y: 5)
                 view.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIView
+                view.draggable = true
             }
             view.animatesDrop = true
             return view
@@ -30,18 +31,11 @@ extension MapViewController: MKMapViewDelegate {
         return nil
     }
     
-    // just practice for tapping on a control
     func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
         let pin = view.annotation as! Pin
-//        let urlString = pin.urlString
-//        let url = NSURL(string: urlString)
-//        let request = NSURLRequest(URL: url!)
         
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionViewController") as! CollectionViewController
-        
-        self.presentViewController(controller, animated: true, completion: nil)
-        
-        //        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-        //        location.mapItem().openInMapsWithLaunchOptions(launchOptions)
+//        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionViewController") as! CollectionViewController
+//        
+//        self.presentViewController(controller, animated: true, completion: nil)
     }
 }
