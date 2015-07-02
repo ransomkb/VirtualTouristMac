@@ -24,6 +24,7 @@ extension MapViewController: MKMapViewDelegate {
                 view.calloutOffset = CGPoint(x: -5, y: 5)
                 view.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIView
             }
+            view.animatesDrop = true
             return view
         }
         return nil

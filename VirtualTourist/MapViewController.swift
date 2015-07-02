@@ -15,6 +15,7 @@ import CoreData
 class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet var longPress: UILongPressGestureRecognizer!
     
     let regionRadius: CLLocationDistance = 4000000
     
@@ -44,6 +45,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        println("View did load.")
         
         // Start the fetched results controller
         var error: NSError?
@@ -61,31 +63,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         mapView.delegate = self
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        
+        mapView.addGestureRecognizer(longPress)
+        
+        mapView.addAnnotations(fetchedResultsController.fetchedObjects)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        println("View will appear.")
         self.navigationController?.navigationBarHidden = true
         
         locationManager.startUpdatingLocation()
-        
-        if let annotations = self.mapView.annotations {
-            self.mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
-            
-            var error: NSError?
-            
-            if fetchedResultsController.performFetch(&error) {
-                if let error = error {
-                    alertMessage = "Error performing initial fetch: \(error)"
-                    
-                    println(alertMessage)
-                    alertUser()
-                }
-                
-                self.mapView.addAnnotations(fetchedResultsController.fetchedObjects)
-            }
-        }
+        //deleteAllPins()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -97,6 +88,96 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         locationManager.stopUpdatingLocation()
         
         super.viewWillDisappear(animated)
+        //deleteAllPins()
+        println("View will disappear")
+    }
+    
+    @IBAction func longPressed(sender: AnyObject) {
+        if longPress.state == .Began {
+            println("Long Press Began")
+            let point: CGPoint = sender.locationInView(mapView)
+            let fingerLocation: CLLocationCoordinate2D = mapView.convertPoint(point, toCoordinateFromView: mapView)
+            let pinLocation = CLLocation(latitude: fingerLocation.latitude, longitude: fingerLocation.longitude)
+            
+            CLGeocoder().reverseGeocodeLocation(pinLocation, completionHandler: {(placemarks, error) -> Void in
+                
+                if (error != nil) {
+                    self.alertMessage = "Reverse geocoder failed with error: " + error.localizedDescription
+                    println("\(self.alertMessage)")
+                    
+                    self.alertUser()
+                    
+                    return
+                }
+                
+                if placemarks.count > 0 {
+                    // maybe don't need this
+                    self.locationManager.stopUpdatingLocation()
+                    
+                    let place = placemarks[0] as! CLPlacemark
+                    let placeText = "\(place.locality), \(place.administrativeArea)  \(place.country)"
+                    println("\(placeText)")
+                    
+                    let dictionary: [String : AnyObject] = [
+                        Pin.Keys.Title : "\(place.administrativeArea)",
+                        Pin.Keys.Address : "\(placeText)",
+                        Pin.Keys.Latitude : fingerLocation.latitude,
+                        Pin.Keys.Longitude : fingerLocation.longitude
+                    ]
+                    
+                    let newPin = Pin(dictionary: dictionary, context: self.sharedContext)
+                    CoreDataStackManager.sharedInstance().saveContext()
+                    self.mapView.addAnnotation(newPin)
+                }
+            })
+        } else if longPress.state == .Ended {
+            println("Long Press Ended")
+        }
+    }
+    
+    // maybe don't need this
+    func updateAnnotations() {
+        
+        println("Updating annotations")
+        if let annotations = mapView.annotations {
+            
+            mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
+            
+            mapView.addAnnotations(fetchedResultsController.fetchedObjects)
+            
+        }
+    }
+    
+    func deletePin(pin: Pin) {
+        println("Deleting a pin")
+        
+        sharedContext.deleteObject(pin)
+        var error: NSError? = nil
+        
+        if !sharedContext.save(&error) {
+            alertMessage = "Error performing initial fetch: \(error)"
+            
+            println(alertMessage)
+            alertUser()
+        }
+    }
+    
+    func deleteAllPins() {
+        println("Deleting pins")
+        let fetched = fetchedResultsController.fetchedObjects
+        
+        fetched?.map() {
+            self.sharedContext.deleteObject($0 as! NSManagedObject)
+        }
+        
+        var error: NSError? = nil
+       
+        if !sharedContext.save(&error) {
+            alertMessage = "Error performing initial fetch: \(error)"
+            
+            println(alertMessage)
+            alertUser()
+        }
     }
     
     func centerMapOnLocation(location: CLLocation) {
@@ -117,8 +198,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         
         CLGeocoder().reverseGeocodeLocation(manager.location, completionHandler: { (placemarks, error) -> Void in
             if (error != nil) {
-                var errorString = "Reverse geocoder failed with error: " + error.localizedDescription
-                self.alertMessage = errorString
+                self.alertMessage = "Reverse geocoder failed with error: " + error.localizedDescription
                 self.alertUser()
                 
                 return

@@ -24,11 +24,13 @@ class Pin: NSManagedObject, MKAnnotation {
     
     @NSManaged var title: String
     @NSManaged var address: String
-    @NSManaged var latitude: CLLocationDegrees
-    @NSManaged var longitude: CLLocationDegrees
+    @NSManaged var latitude: NSNumber
+    @NSManaged var longitude: NSNumber
     
     var coordinate: CLLocationCoordinate2D {
-        var coords = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let lat: CLLocationDegrees = latitude as! Double
+        let lon: CLLocationDegrees = longitude as! Double
+        var coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
         return coords
     }
     
