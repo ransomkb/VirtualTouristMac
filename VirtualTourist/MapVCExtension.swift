@@ -34,8 +34,10 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
         let pin = view.annotation as! Pin
         
-//        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionViewController") as! CollectionViewController
-//        
-//        self.presentViewController(controller, animated: true, completion: nil)
+        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionViewController") as! CollectionViewController
+        controller.pin = pin
+        controller.regionSpan = self.regionSpan
+        
+        self.navigationController!.pushViewController(controller, animated: true)
     }
 }

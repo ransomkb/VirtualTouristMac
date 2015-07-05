@@ -26,6 +26,7 @@ class Pin: NSManagedObject, MKAnnotation {
     @NSManaged var address: String
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
+    @NSManaged var photos: [Photo]
     
     var coordinate: CLLocationCoordinate2D {
         get {

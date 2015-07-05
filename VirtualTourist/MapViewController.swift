@@ -17,14 +17,25 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet var longPress: UILongPressGestureRecognizer!
     
-    let regionRadius: CLLocationDistance = 4000000
-    
+    var zoomDictionary = [String : AnyObject]()
     var locationManager = CLLocationManager()
-    var coordinates: CLLocationCoordinate2D?
+    var coordinate: CLLocationCoordinate2D? = CLLocationCoordinate2D(latitude: 39.50, longitude: -98.35) // Set default to center of US.
+    var regionSpan: MKCoordinateSpan? = MKCoordinateSpan(latitudeDelta: 4000, longitudeDelta: 4000)
     var placemark: CLPlacemark!
     
     var alertMessage: String?
     
+    
+    var region: MKCoordinateRegion {
+        return MKCoordinateRegionMake(coordinate!, regionSpan!)
+    }
+    
+    var filePath : String {
+        let manager = NSFileManager.defaultManager()
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
+        return url.URLByAppendingPathComponent("zoomDictionary").path!
+    }
+
     var sharedContext: NSManagedObjectContext {
         return CoreDataStackManager.sharedInstance().managedObjectContext!
     }
@@ -41,7 +52,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             cacheName: nil)
         
         return fetchedResultsController
-        }()
+    }()
+    
+    struct Keys {
+        static let Latitude = "latitude"
+        static let Longitude = "longitude"
+        static let LatitudeDelta = "latitudeDelta"
+        static let LongitudeDelta = "longitudeDelta"
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +85,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         mapView.addGestureRecognizer(longPress)
         
         mapView.addAnnotations(fetchedResultsController.fetchedObjects)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveRegion", name: "saveData", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -74,9 +94,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         
         println("View will appear.")
         self.navigationController?.navigationBarHidden = true
-        
-        locationManager.startUpdatingLocation()
+
         //deleteAllPins()
+        //centerMapOnLocation()
+        
+        if let dictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
+            zoomDictionary = dictionary
+            setRegion()
+        } else {
+            locationManager.startUpdatingLocation()
+            locationManager.pausesLocationUpdatesAutomatically = true
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -90,8 +118,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         super.viewWillDisappear(animated)
         //deleteAllPins()
         println("View will disappear")
+        
         // Ensure the coordinates of any dragged pins are updated.
         CoreDataStackManager.sharedInstance().saveContext()
+        saveRegion()
     }
     
     @IBAction func longPressed(sender: AnyObject) {
@@ -140,6 +170,48 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         }
     }
     
+    // Set the Region to saved zoom level
+    func setRegion() {
+        // upadate this with an UnarchivedKey
+        if let lat = zoomDictionary[Keys.Latitude] as? CLLocationDegrees {
+            if let lon = zoomDictionary[Keys.Longitude] as? CLLocationDegrees {
+                coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+            }
+        }
+        
+        if let latDel = zoomDictionary[Keys.LatitudeDelta] as? CLLocationDegrees {
+            if let lonDel = zoomDictionary[Keys.LongitudeDelta] as? CLLocationDegrees {
+                regionSpan = MKCoordinateSpan(latitudeDelta: latDel, longitudeDelta: lonDel)
+            }
+        }
+        
+        mapView.setRegion(region, animated: true)
+    }
+    
+    
+    // Save the region to file
+    func saveRegion() {
+        println("Saving region and zoom.")
+        coordinate = mapView.region.center
+        regionSpan = mapView.region.span
+        if let coord = coordinate {
+            zoomDictionary[Keys.Latitude] = coord.latitude
+            zoomDictionary[Keys.Longitude] = coord.longitude
+            zoomDictionary[Keys.LatitudeDelta] = regionSpan?.latitudeDelta
+            zoomDictionary[Keys.LongitudeDelta] = regionSpan?.longitudeDelta
+            
+            // Save the dictionary
+            NSKeyedArchiver.archiveRootObject(zoomDictionary, toFile: filePath)
+        }
+    }
+    
+    // Maybe won't use this
+    func centerMapOnLocation() {
+        println("Centering Map.")
+        
+        mapView.setRegion(region, animated: true)
+    }
+    
     // maybe don't need this
     func updateAnnotations() {
         
@@ -185,18 +257,19 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         }
     }
     
-    func centerMapOnLocation(location: CLLocation) {
-        println("Centering Map.")
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
-        mapView.setRegion(coordinateRegion, animated: true)
-    }
-    
     func checkLocationAuthorizationStatus() {
         if CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse {
             mapView.showsUserLocation = true
         } else {
             locationManager.requestWhenInUseAuthorization()
         }
+    }
+    
+    func locationManager(manager: CLLocationManager!, didUpdateToLocation newLocation: CLLocation!, fromLocation oldLocation: CLLocation!) {
+        
+        // Reset mapView.
+        coordinate = newLocation.coordinate
+        mapView.setRegion(region, animated: true)
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
