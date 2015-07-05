@@ -16,10 +16,12 @@ class Photo: NSManagedObject {
     struct Keys {
         static let PhotoID = "photoID"
         static let Title = "title"
+        static let ImagePath = "imagePath"
     }
     
     @NSManaged var id: NSNumber
     @NSManaged var title: String
+    @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
     
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
@@ -33,8 +35,18 @@ class Photo: NSManagedObject {
         
         id = dictionary[Keys.PhotoID] as! Int
         title = dictionary[Keys.Title] as! String
+        imagePath = dictionary[Keys.ImagePath] as? String
     }
     
-    // add an image cache like in Movie from Favorite Actors
-
+    // Variable for accessing photos in caches
+    var photoImage: UIImage? {
+        get {
+            return PinPhotos.Caches.imageCache.imageWithIdentifier(imagePath)
+        }
+        
+        set {
+            PinPhotos.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)
+        }
+    }
+    
 }

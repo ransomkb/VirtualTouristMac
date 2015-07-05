@@ -81,7 +81,7 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="r1d-v5-owy">
                                 <rect key="frame" x="0.0" y="72" width="600" height="68"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="68" id="9zo-ab-EZy"/>
+                                    <constraint firstAttribute="height" constant="68" id="Rju-Lo-dBm"/>
                                 </constraints>
                             </mapView>
                             <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y3Q-cx-EAV">
@@ -93,20 +93,34 @@
                                 <rect key="frame" x="0.0" y="142" width="600" height="458"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="yfi-tl-wYu">
-                                    <size key="itemSize" width="120" height="118"/>
+                                    <size key="itemSize" width="200" height="200"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="yk7-bg-9a5">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="yk7-bg-9a5" customClass="TaskCancellingCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="120" height="118"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CJG-zA-UcV">
+                                                    <rect key="frame" x="2" y="2" width="196" height="196"/>
+                                                </imageView>
+                                            </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <constraints>
+                                            <constraint firstItem="CJG-zA-UcV" firstAttribute="leading" secondItem="yk7-bg-9a5" secondAttribute="leading" constant="2" id="ESb-97-LrS"/>
+                                            <constraint firstAttribute="bottom" secondItem="CJG-zA-UcV" secondAttribute="bottom" constant="2" id="Ihf-dW-9MV"/>
+                                            <constraint firstAttribute="trailing" secondItem="CJG-zA-UcV" secondAttribute="trailing" constant="2" id="Jse-tf-NJW"/>
+                                            <constraint firstItem="CJG-zA-UcV" firstAttribute="top" secondItem="yk7-bg-9a5" secondAttribute="top" constant="2" id="mLT-AM-GXw"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="imageView" destination="CJG-zA-UcV" id="0YQ-IY-aep"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -117,19 +131,19 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="Bu2-UJ-ow6"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="Y3Q-cx-EAV" secondAttribute="leading" id="Fst-fU-chZ"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="trailing" secondItem="Y3Q-cx-EAV" secondAttribute="trailing" id="Pab-ng-1tG"/>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="leading" secondItem="r1d-v5-owy" secondAttribute="leading" id="RMg-mg-yN1"/>
-                            <constraint firstAttribute="trailing" secondItem="G19-Se-rUS" secondAttribute="trailing" id="Zvf-m6-G5k"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="top" secondItem="r1d-v5-owy" secondAttribute="bottom" constant="2" id="aqS-3j-gI5"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="top" secondItem="G19-Se-rUS" secondAttribute="bottom" id="f27-nN-m0s"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="trailing" secondItem="Y3Q-cx-EAV" secondAttribute="trailing" id="j9c-6Y-Ufy"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="bottom" secondItem="Y3Q-cx-EAV" secondAttribute="bottom" id="met-cn-FWe"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="leading" secondItem="CVx-8D-ZxA" secondAttribute="leading" id="nVs-Qz-uhO"/>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="top" secondItem="Fni-A4-5Ts" secondAttribute="bottom" constant="8" id="tCH-TY-qfe"/>
-                            <constraint firstAttribute="bottom" secondItem="Zaa-Tf-gS7" secondAttribute="bottom" id="tZC-QE-pcN"/>
-                            <constraint firstItem="Y3Q-cx-EAV" firstAttribute="leading" secondItem="r1d-v5-owy" secondAttribute="leading" id="u0D-k5-vnO"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="leading" secondItem="CVx-8D-ZxA" secondAttribute="leading" id="2BB-4v-xcD"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="trailing" secondItem="Zaa-Tf-gS7" secondAttribute="trailing" id="3Bp-dn-7N5"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="top" secondItem="r1d-v5-owy" secondAttribute="bottom" constant="2" id="4P4-4R-fz5"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="top" secondItem="G19-Se-rUS" secondAttribute="bottom" id="GgD-DH-nZv"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="bottom" secondItem="Y3Q-cx-EAV" secondAttribute="bottom" id="JDX-pb-x4d"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="top" secondItem="Fni-A4-5Ts" secondAttribute="bottom" constant="8" id="Pvh-lO-c2w"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="r1d-v5-owy" secondAttribute="leading" id="SFh-v0-xgr"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="Y3Q-cx-EAV" secondAttribute="leading" id="VSw-wJ-zDG"/>
+                            <constraint firstItem="Y3Q-cx-EAV" firstAttribute="trailing" secondItem="Zaa-Tf-gS7" secondAttribute="trailing" id="XCb-3p-vgw"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="leading" secondItem="G19-Se-rUS" secondAttribute="leading" id="Z5O-hN-cii"/>
+                            <constraint firstAttribute="bottom" secondItem="Zaa-Tf-gS7" secondAttribute="bottom" id="j3e-Mg-HPi"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="qEc-p6-l7R"/>
+                            <constraint firstAttribute="trailing" secondItem="Y3Q-cx-EAV" secondAttribute="trailing" id="wMF-25-reh"/>
                         </constraints>
                     </view>
                     <toolbarItems>

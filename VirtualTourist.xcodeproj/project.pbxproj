@@ -24,6 +24,7 @@
 		D455263C1B410834004ADE62 /* MapVCExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D455263B1B410834004ADE62 /* MapVCExtension.swift */; };
 		D455263E1B4126BC004ADE62 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */; };
 		D4724B081B49283A002E8951 /* TaskCancellingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4724B071B49283A002E8951 /* TaskCancellingCollectionViewCell.swift */; };
+		D4724B0A1B4938D4002E8951 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4724B091B4938D4002E8951 /* ImageCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		D455263B1B410834004ADE62 /* MapVCExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapVCExtension.swift; sourceTree = "<group>"; };
 		D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStackManager.swift; path = "../../../../../Git Stuff/Udacity/Project 4/step-5.4/CoreDataFavoriteActors/FavoriteActors/CoreDataStackManager.swift"; sourceTree = "<group>"; };
 		D4724B071B49283A002E8951 /* TaskCancellingCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCancellingCollectionViewCell.swift; sourceTree = "<group>"; };
+		D4724B091B4938D4002E8951 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,8 +145,8 @@
 				D45526281B40FCF7004ADE62 /* MapViewController.swift */,
 				D455263B1B410834004ADE62 /* MapVCExtension.swift */,
 				D45526221B40FAE4004ADE62 /* CollectionViewController.swift */,
-				D45525F61B40F938004ADE62 /* AppDelegate.swift */,
 				D4724B071B49283A002E8951 /* TaskCancellingCollectionViewCell.swift */,
+				D45525F61B40F938004ADE62 /* AppDelegate.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -157,6 +159,7 @@
 				D45526351B4101FE004ADE62 /* PinPhotos.swift */,
 				D45526371B41024E004ADE62 /* PinPhotosConstants.swift */,
 				D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */,
+				D4724B091B4938D4002E8951 /* ImageCache.swift */,
 				D45525F81B40F938004ADE62 /* VirtualTourist.xcdatamodeld */,
 			);
 			name = Model;
@@ -277,6 +280,7 @@
 				D455263E1B4126BC004ADE62 /* CoreDataStackManager.swift in Sources */,
 				D45526291B40FCF7004ADE62 /* MapViewController.swift in Sources */,
 				D45526381B41024E004ADE62 /* PinPhotosConstants.swift in Sources */,
+				D4724B0A1B4938D4002E8951 /* ImageCache.swift in Sources */,
 				D45525F71B40F938004ADE62 /* AppDelegate.swift in Sources */,
 				D4724B081B49283A002E8951 /* TaskCancellingCollectionViewCell.swift in Sources */,
 				D455263C1B410834004ADE62 /* MapVCExtension.swift in Sources */,

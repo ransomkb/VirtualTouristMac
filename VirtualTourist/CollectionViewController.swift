@@ -13,7 +13,7 @@ import CoreLocation
 import CoreData
 
 
-class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate,MKMapViewDelegate, NSFetchedResultsControllerDelegate {
+class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var navBar: UINavigationBar!
     @IBOutlet weak var cancelButton: UIBarButtonItem!
@@ -26,6 +26,13 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     private let reuseIdentifier = "PhotoCell"
     private let sectionInsets = UIEdgeInsets(top: 2.0, left: 2.0, bottom: 5.0, right: 2.0)
+    
+    var selectedIndexes = [NSIndexPath]()
+    
+    // Keep track of insertions, deletions, and updates.
+    var insertedIndexPaths: [NSIndexPath]!
+    var deletedIndexPaths: [NSIndexPath]!
+    var updatedIndexPaths: [NSIndexPath]!
     
     var coordinate: CLLocationCoordinate2D?
     var regionSpan: MKCoordinateSpan?
@@ -111,27 +118,40 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     // Layout the collection view
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        // Lay out the collection view so that cells take up 1/3 of the width,
-        // with no space in between.
-        let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
+//        if var size = photo.thumbnail?.size {
+//            size.width += 10
+//            size.height += 10
+//            return size
+//        }
+        return CGSize(width: 100, height: 100)
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+        return sectionInsets
         
-        let width = floor(self.collectionView.frame.size.width/3)
-        layout.itemSize = CGSize(width: width, height: width)
-        collectionView.collectionViewLayout = layout
     }
     
     // MARK - Configure Cell
     // maybe do not need
     func configureCell(cell: TaskCancellingCollectionViewCell, photo: Photo) {
+        
         var coordintateImage = UIImage(named: "posterPlaceHoldr")
         
-        cell.contentView = UIImageView(image: coordintateImage)
+        cell.imageView!.image = nil
+        
+        // Set the Photo Image
+        if photo.imagePath == nil || photo.imagePath == "" {
+            coordintateImage = UIImage(named: "noImage")
+        } else if photo.photoImage != nil {
+            coordintateImage = photo.photoImage
+        } else {
+            
+        }
+        
+        cell.imageView!.image = coordintateImage
     }
     
     // MARK - UICollectionView
@@ -149,8 +169,10 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! TaskCancellingCollectionViewCell
         let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! TaskCancellingCollectionViewCell
+        cell.backgroundColor = UIColor.blackColor()
         self.configureCell(cell, photo: photo)
         
         return cell
@@ -158,21 +180,91 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+        let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! TaskCancellingCollectionViewCell
+        
+        if let index = find(selectedIndexes, indexPath) {
+            selectedIndexes.removeAtIndex(index)
+        } else {
+            selectedIndexes.append(indexPath)
+        }
+        
+        //configureCell(cell, photo: photo)
+        
+        collectionView.deleteItemsAtIndexPaths(selectedIndexes)
+        sharedContext.deleteObject(photo)
+        CoreDataStackManager.sharedInstance().saveContext()
+        
+        collectionView.reloadData()
     }
     
     
     // MARK: - Fetched Results Controller Delegate
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        
+        insertedIndexPaths = [NSIndexPath]()
+        deletedIndexPaths = [NSIndexPath]()
+        updatedIndexPaths = [NSIndexPath]()
+
     }
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        println("in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
         
+        collectionView.performBatchUpdates({() -> Void in
+            
+            for indexPath in self.insertedIndexPaths {
+                self.collectionView.insertItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.deletedIndexPaths {
+                self.collectionView.deleteItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.updatedIndexPaths {
+                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+            }
+            
+            }, completion: nil)
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+        
+        switch type {
+        case .Insert:
+            self.collectionView.insertSections(NSIndexSet(index: sectionIndex))
+            
+        case .Delete:
+            self.collectionView.deleteSections(NSIndexSet(index: sectionIndex))
+            
+        default:
+            return
+        }
     }
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
+        switch type{
+            
+        case .Insert:
+            println("Inserting an item")
+            insertedIndexPaths.append(newIndexPath!)
+            break
+        case .Delete:
+            println("Deleting an item")
+            deletedIndexPaths.append(indexPath!)
+            break
+        case .Update:
+            println("Updating an item.")
+            updatedIndexPaths.append(indexPath!)
+            break
+        case .Move:
+            println("Moving an item. We don't expect to see this in this app.")
+            break
+        default:
+            break
+        }
     }
     
     // MARK - Misc Activities
