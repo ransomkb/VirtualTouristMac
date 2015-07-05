@@ -192,8 +192,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     // Save the region to file
     func saveRegion() {
         println("Saving region and zoom.")
+        println("First saving Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         coordinate = mapView.region.center
         regionSpan = mapView.region.span
+        println("Second saving Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         if let coord = coordinate {
             zoomDictionary[Keys.Latitude] = coord.latitude
             zoomDictionary[Keys.Longitude] = coord.longitude

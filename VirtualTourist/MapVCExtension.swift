@@ -36,7 +36,11 @@ extension MapViewController: MKMapViewDelegate {
         
         let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CollectionViewController") as! CollectionViewController
         controller.pin = pin
+        println("Callout accessory tapped.")
+        println("Before Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
+        saveRegion()
         controller.regionSpan = self.regionSpan
+        println("Later Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         
         self.navigationController!.pushViewController(controller, animated: true)
     }

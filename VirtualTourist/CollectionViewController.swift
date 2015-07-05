@@ -108,6 +108,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         super.viewWillAppear(animated)
         
         if let pin = pin {
+            println("Collection Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
             coordinate = pin.coordinate
             mapView.setRegion(region, animated: true)
             mapView.addAnnotation(pin)
