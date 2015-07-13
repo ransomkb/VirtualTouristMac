@@ -22,7 +22,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    @IBOutlet weak var newCollectionButton: UIBarButtonItem!
     
     private let reuseIdentifier = "PhotoCell"
     private let sectionInsets = UIEdgeInsets(top: 2.0, left: 2.0, bottom: 5.0, right: 2.0)
@@ -40,7 +39,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     var alertMessage: String?
     
     var pin: Pin?
+    var photos = [Photo]()
     
+    var searchTask: NSURLSessionDataTask?
     
     var sharedContext: NSManagedObjectContext = CoreDataStackManager.sharedInstance().managedObjectContext!
     
@@ -71,15 +72,122 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     
     @IBAction func cancelActivities(sender: AnyObject) {
-        NSOperationQueue.mainQueue().addOperationWithBlock {
-            //self.activityIndicatorView.stopAnimating()
+        
+        // Cancel the last task
+        if let task = searchTask {
+            task.cancel()
+        }
+        
+        println("Deleting photos")
+        let fetched = fetchedResultsController.fetchedObjects
+        
+        fetched?.map() {
+            self.sharedContext.deleteObject($0 as! NSManagedObject)
+        }
+        
+        var error: NSError? = nil
+        
+        if !sharedContext.save(&error) {
+            alertMessage = "Error performing initial fetch: \(error)"
             
+            println(alertMessage)
+            alertUser()
+        }
+        
+        CoreDataStackManager.sharedInstance().saveContext()
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock {
             self.navigationController?.popToRootViewControllerAnimated(true)
         }
     }
-
+    
     @IBAction func fetchNewCollection(sender: AnyObject) {
+        // Cancel the last task
+        if let task = searchTask {
+            task.cancel()
+        }
         
+        println("Deleting photos")
+        let fetched = fetchedResultsController.fetchedObjects
+        
+        fetched?.map() {photo in
+            self.sharedContext.deleteObject(photo as! Photo)
+        }
+        
+        var error: NSError? = nil
+        
+        if !sharedContext.save(&error) {
+            alertMessage = "Error performing initial fetch: \(error)"
+            
+            println(alertMessage)
+            alertUser()
+        }
+        
+        let methodArguments = [
+            "method": PinPhotos.API.METHOD_NAME,
+            "api_key": PinPhotos.API.API_KEY,
+            "bbox": PinPhotos.sharedInstance().createBoundingBoxString(pin!),
+            "safe_search": PinPhotos.API.SAFE_SEARCH,
+            "extras": PinPhotos.API.EXTRAS,
+            "format": PinPhotos.API.DATA_FORMAT,
+            "nojsoncallback": PinPhotos.API.NO_JSON_CALLBACK
+        ]
+        
+        searchTask = PinPhotos.sharedInstance().taskForResource(methodArguments, completionHandler: { (parsedResult, error) -> Void in
+            
+            // Handle the error case
+            if let error = error {
+                self.alertMessage = "Error searching for photos: \(error.localizedDescription)"
+                println(self.alertMessage)
+                return
+            }
+            
+            if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
+                println("Got some photos")
+                if let totalPages = photosDictionary["pages"] as? Int {
+                    println("Counting pages")
+                    // this seems odd; why limit of 40?
+                    let pageLimit = min(totalPages, 40)
+                    let randomPage = Int(arc4random_uniform(UInt32(pageLimit))) + 1
+                    
+                    var withPageDictionary: [String:AnyObject] = methodArguments
+                    withPageDictionary["page"] = "\(randomPage)"
+                    
+                    PinPhotos.sharedInstance().taskForResource(withPageDictionary, completionHandler: { (parsedResult, error) -> Void in
+                        // Handle the error case
+                        if let error = error {
+                            self.alertMessage = "Error searching for photos: \(error.localizedDescription)"
+                            println(self.alertMessage)
+                            return
+                        }
+                        
+                        var totalPhotosValue = 0
+                        if let totalPhotos = photosDictionary["total"] as? String {
+                            totalPhotosValue = (totalPhotos as NSString).integerValue
+                        }
+                        
+                        if totalPhotosValue > 0 {
+                            
+                            println("Total photos: \(totalPhotosValue)")
+                            if let photosArray = photosDictionary["photo"] as? [[String:AnyObject]] {
+                                println("Creating array of Photo entities")
+                                self.photos = photosArray.map() {
+                                    Photo(dictionary: $0, context: self.sharedContext)
+                                }
+                                
+                                CoreDataStackManager.sharedInstance().saveContext()
+                            }
+                        }
+                    })
+                } else {
+                    self.alertMessage = "Can't find key 'pages' in \(photosDictionary)"
+                    println(self.alertMessage)
+                }
+            } else {
+                self.alertMessage = "Can't find key 'photos' in \(parsedResult)"
+                println(self.alertMessage)
+            }
+        })
     }
     
     override func viewDidLoad() {
@@ -101,7 +209,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         fetchedResultsController.delegate = self
         
         mapView.delegate = self
-
+        
+        println("Photos in fetched objects: \(fetchedResultsController.fetchedObjects!.count)")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -115,6 +224,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         } else {
             cancelActivities(self)
         }
+        println("Photos in fetched objects 2: \(fetchedResultsController.fetchedObjects!.count)")
     }
     
     // Layout the collection view
@@ -138,7 +248,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK - Configure Cell
     // maybe do not need
     func configureCell(cell: TaskCancellingCollectionViewCell, photo: Photo) {
-        
+        cell.activityIndicator.startAnimating()
         var coordintateImage = UIImage(named: "posterPlaceHoldr")
         
         cell.imageView!.image = nil
@@ -149,7 +259,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         } else if photo.photoImage != nil {
             coordintateImage = photo.photoImage
         } else {
-            
+            // find out what goes here, if anything. like favorite actors?
         }
         
         cell.imageView!.image = coordintateImage
@@ -191,13 +301,14 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             selectedIndexes.append(indexPath)
         }
         
+        self.pinAlertViewController(photo)
         //configureCell(cell, photo: photo)
         
-        collectionView.deleteItemsAtIndexPaths(selectedIndexes)
-        sharedContext.deleteObject(photo)
-        CoreDataStackManager.sharedInstance().saveContext()
-        
-        collectionView.reloadData()
+//        collectionView.deleteItemsAtIndexPaths(selectedIndexes)
+//        sharedContext.deleteObject(photo)
+//        CoreDataStackManager.sharedInstance().saveContext()
+//        
+//        collectionView.reloadData()
     }
     
     
@@ -226,7 +337,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             for indexPath in self.updatedIndexPaths {
                 self.collectionView.reloadItemsAtIndexPaths([indexPath])
             }
-            
+            return
             }, completion: nil)
     }
     
@@ -284,6 +395,91 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             alertController.addAction(okAction)
             self.presentViewController(alertController, animated: true, completion: nil)
         })
+    }
+    
+    
+    func pinAlertViewController(photo: Photo) {
+        let pinController = UIAlertController(title: "Pin Actions", message: "Select an Action for this Pin.", preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
+        pinController.addAction(UIAlertAction(title: "Remove This Photo from Album", style: .Destructive, handler: { (action: UIAlertAction!) -> Void in
+            println("Removing Photo")
+            self.removePhoto(photo)
+            return
+        }))
+        
+        pinController.addAction(UIAlertAction(title: "Delete This Pin", style: .Destructive, handler: { (action: UIAlertAction!) -> Void in
+            println("Deleting Pin")
+            self.deletePin(self.pin!)
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                self.navigationController?.popToRootViewControllerAnimated(true)
+            }
+        }))
+        
+        pinController.addAction(UIAlertAction(title: "Delete All Pins", style: .Destructive, handler: { (action: UIAlertAction!) -> Void in
+            println("Deleting All Pins")
+            self.deleteAllPins()
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                self.navigationController?.popToRootViewControllerAnimated(true)
+            }
+        }))
+        
+        pinController.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) -> Void in
+            println("Canceling Pin Action")
+            return
+        }))
+        
+        presentViewController(pinController, animated: true, completion: nil)
+    }
+    
+    func removePhoto(photo: Photo) {
+        collectionView.deleteItemsAtIndexPaths(selectedIndexes)
+        sharedContext.deleteObject(photo)
+        var error: NSError? = nil
+        
+        if !sharedContext.save(&error) {
+            alertMessage = "Error performing initial fetch: \(error)"
+            
+            println(alertMessage)
+            alertUser()
+        }
+        
+        CoreDataStackManager.sharedInstance().saveContext()
+        
+        collectionView.reloadData()
+    }
+    
+    func deletePin(pin: Pin) {
+        println("Deleting a pin")
+        
+        sharedContext.deleteObject(pin)
+        var error: NSError? = nil
+        
+        if !sharedContext.save(&error) {
+            alertMessage = "Error performing initial fetch: \(error)"
+            
+            println(alertMessage)
+            alertUser()
+        }
+    }
+    
+    func deleteAllPins() {
+        println("Deleting pins")
+        let fetched = fetchedResultsController.fetchedObjects
+        
+        fetched?.map() {
+            self.sharedContext.deleteObject($0 as! NSManagedObject)
+        }
+        
+        var error: NSError? = nil
+        
+        if !sharedContext.save(&error) {
+            alertMessage = "Error performing initial fetch: \(error)"
+            
+            println(alertMessage)
+            alertUser()
+        }
     }
     
     

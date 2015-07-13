@@ -38,7 +38,7 @@ extension MapViewController: MKMapViewDelegate {
         controller.pin = pin
         println("Callout accessory tapped.")
         println("Before Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
-        saveRegion()
+        self.saveRegion()
         controller.regionSpan = self.regionSpan
         println("Later Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         

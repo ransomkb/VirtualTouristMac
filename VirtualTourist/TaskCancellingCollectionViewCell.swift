@@ -14,6 +14,8 @@ class TaskCancellingCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     var imageName: String = ""
     
     var taskToCancelifCellIsReused: NSURLSessionTask? {
@@ -22,6 +24,17 @@ class TaskCancellingCollectionViewCell: UICollectionViewCell {
             if let taskToCancel = oldValue {
                 taskToCancel.cancel()
             }
+        }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.selected = false
+    }
+    
+    override var selected : Bool {
+        didSet {
+            self.backgroundColor = selected ? UIColor.whiteColor() : UIColor.blackColor()
         }
     }
 }

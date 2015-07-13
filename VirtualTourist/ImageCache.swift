@@ -22,6 +22,8 @@ class ImageCache {
         }
         
         let path = pathForIdentifier(identifier!)
+        
+        // why do we need this?
         var data: NSData?
         
         // First try the memory cache

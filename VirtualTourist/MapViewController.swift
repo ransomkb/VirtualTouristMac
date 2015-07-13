@@ -84,8 +84,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         
         mapView.addGestureRecognizer(longPress)
         
-        mapView.addAnnotations(fetchedResultsController.fetchedObjects)
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveRegion", name: "saveData", object: nil)
     }
     
@@ -97,6 +95,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
 
         //deleteAllPins()
         //centerMapOnLocation()
+        
+        
+        println("Updating annotations")
+        if let annotations = mapView.annotations {
+            
+            mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
+        }
+
+        CoreDataStackManager.sharedInstance().saveContext()
+        
+        mapView.addAnnotations(fetchedResultsController.fetchedObjects)
         
         if let dictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
             zoomDictionary = dictionary
@@ -224,38 +233,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             
             mapView.addAnnotations(fetchedResultsController.fetchedObjects)
             
-        }
-    }
-    
-    func deletePin(pin: Pin) {
-        println("Deleting a pin")
-        
-        sharedContext.deleteObject(pin)
-        var error: NSError? = nil
-        
-        if !sharedContext.save(&error) {
-            alertMessage = "Error performing initial fetch: \(error)"
-            
-            println(alertMessage)
-            alertUser()
-        }
-    }
-    
-    func deleteAllPins() {
-        println("Deleting pins")
-        let fetched = fetchedResultsController.fetchedObjects
-        
-        fetched?.map() {
-            self.sharedContext.deleteObject($0 as! NSManagedObject)
-        }
-        
-        var error: NSError? = nil
-       
-        if !sharedContext.save(&error) {
-            alertMessage = "Error performing initial fetch: \(error)"
-            
-            println(alertMessage)
-            alertUser()
         }
     }
     
