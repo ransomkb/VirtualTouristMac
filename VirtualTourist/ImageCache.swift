@@ -22,6 +22,7 @@ class ImageCache {
         }
         
         let path = pathForIdentifier(identifier!)
+        println("Getting image with identifier: \(path)")
         
         // why do we need this?
         var data: NSData?
@@ -42,7 +43,10 @@ class ImageCache {
     // MARK: - Saving images
     
     func storeImage(image: UIImage?, withIdentifier identifier: String) {
+        
+        println("Storing image")
         let path = pathForIdentifier(identifier)
+        println("Stored at path: \(path)")
         
         // If the image is nil, remove images from the cache
         if image == nil {

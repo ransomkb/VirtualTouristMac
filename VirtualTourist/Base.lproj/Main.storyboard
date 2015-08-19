@@ -69,7 +69,11 @@
                                 <rect key="frame" x="0.0" y="28" width="600" height="44"/>
                                 <items>
                                     <navigationItem title="Pin Album" id="iAw-Kf-cJm">
-                                        <barButtonItem key="backBarButtonItem" title="Map" id="bbm-bM-I4Z"/>
+                                        <barButtonItem key="leftBarButtonItem" title="Back" id="bbm-bM-I4Z">
+                                            <connections>
+                                                <action selector="backToMap:" destination="Dq2-Pe-22X" id="0Op-bm-WpS"/>
+                                            </connections>
+                                        </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" systemItem="cancel" id="IFQ-zM-HKR">
                                             <connections>
                                                 <action selector="cancelActivities:" destination="Dq2-Pe-22X" id="aIv-yd-QhF"/>
@@ -81,7 +85,7 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="r1d-v5-owy">
                                 <rect key="frame" x="0.0" y="72" width="600" height="68"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="68" id="T9F-RM-2bK"/>
+                                    <constraint firstAttribute="height" constant="68" id="9KB-c0-WWX"/>
                                 </constraints>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Zaa-Tf-gS7">
@@ -101,7 +105,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CJG-zA-UcV">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CJG-zA-UcV">
                                                     <rect key="frame" x="2" y="2" width="196" height="196"/>
                                                 </imageView>
                                                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="BGc-2T-fCj">
@@ -141,18 +145,18 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="gVb-Nw-n0e" firstAttribute="centerX" secondItem="Zaa-Tf-gS7" secondAttribute="centerX" id="0pT-UR-FIt"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="leading" secondItem="G19-Se-rUS" secondAttribute="leading" id="8cd-pG-Kmf"/>
-                            <constraint firstItem="q8P-sQ-6LM" firstAttribute="top" secondItem="gVb-Nw-n0e" secondAttribute="bottom" constant="9" id="8rr-iv-wD5"/>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="AFY-yz-6RE"/>
-                            <constraint firstAttribute="trailing" secondItem="Zaa-Tf-gS7" secondAttribute="trailing" id="Gxh-90-eiY"/>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="top" secondItem="Fni-A4-5Ts" secondAttribute="bottom" constant="8" id="I0y-nE-KYF"/>
-                            <constraint firstItem="gVb-Nw-n0e" firstAttribute="top" secondItem="Zaa-Tf-gS7" secondAttribute="bottom" constant="8" symbolic="YES" id="LnR-aI-e6L"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="r1d-v5-owy" secondAttribute="leading" id="YHP-jc-ho5"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="top" secondItem="G19-Se-rUS" secondAttribute="bottom" id="cR7-ox-UWI"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="ly0-F1-w4C"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="top" secondItem="r1d-v5-owy" secondAttribute="bottom" constant="2" id="t1L-Th-jIm"/>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="leading" secondItem="CVx-8D-ZxA" secondAttribute="leading" id="tma-Vh-fp1"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="9a5-ZG-9NO"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="top" secondItem="G19-Se-rUS" secondAttribute="bottom" id="Dq3-dK-hpW"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="top" secondItem="r1d-v5-owy" secondAttribute="bottom" constant="2" id="F8i-7q-0Eo"/>
+                            <constraint firstAttribute="trailing" secondItem="Zaa-Tf-gS7" secondAttribute="trailing" id="JbQ-UL-TzD"/>
+                            <constraint firstItem="q8P-sQ-6LM" firstAttribute="top" secondItem="gVb-Nw-n0e" secondAttribute="bottom" constant="9" id="LyL-Eb-Q9d"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="top" secondItem="Fni-A4-5Ts" secondAttribute="bottom" constant="8" id="Mwp-fy-8Nx"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="centerX" secondItem="gVb-Nw-n0e" secondAttribute="centerX" id="Nds-cy-9Kh"/>
+                            <constraint firstItem="gVb-Nw-n0e" firstAttribute="top" secondItem="Zaa-Tf-gS7" secondAttribute="bottom" constant="8" symbolic="YES" id="PL0-Xd-20c"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="trailing" secondItem="Zaa-Tf-gS7" secondAttribute="trailing" id="dbu-Ay-z2V"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="r1d-v5-owy" secondAttribute="leading" id="ghc-9X-mDG"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="CVx-8D-ZxA" secondAttribute="leading" id="vo8-mC-qnM"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="leading" secondItem="G19-Se-rUS" secondAttribute="leading" id="zbt-bE-Jq2"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -162,6 +166,7 @@
                         <outlet property="collectionView" destination="Zaa-Tf-gS7" id="GxV-Wu-sC8"/>
                         <outlet property="mapView" destination="r1d-v5-owy" id="e3m-mG-48H"/>
                         <outlet property="navBar" destination="G19-Se-rUS" id="yV0-uG-7pD"/>
+                        <outlet property="newCollectionButton" destination="gVb-Nw-n0e" id="gfJ-gL-MHc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="E4R-k1-vjI" userLabel="First Responder" sceneMemberID="firstResponder"/>

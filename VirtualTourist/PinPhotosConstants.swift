@@ -17,6 +17,7 @@ extension PinPhotos {
         static let SAFE_SEARCH = "1"
         static let DATA_FORMAT = "json"
         static let NO_JSON_CALLBACK = "1"
+        static let PerPage = "1"
         
     }
     
@@ -33,6 +34,7 @@ extension PinPhotos {
         static let Total = "total"
         static let Page = "page"
         static let Pages = "pages"
+        static let PerPage = "per_page"
         static let ID = "id"
         static let Title = "title"
         static let ErrorStatusMessage = "status_message"

@@ -32,9 +32,9 @@ class TaskCancellingCollectionViewCell: UICollectionViewCell {
         self.selected = false
     }
     
-    override var selected : Bool {
-        didSet {
-            self.backgroundColor = selected ? UIColor.whiteColor() : UIColor.blackColor()
-        }
-    }
+//    override var selected : Bool {
+//        didSet {
+//            self.backgroundColor = selected ? UIColor.whiteColor() : UIColor.blackColor()
+//        }
+//    }
 }

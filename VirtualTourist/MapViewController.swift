@@ -11,11 +11,17 @@ import UIKit
 import MapKit
 import CoreLocation
 import CoreData
+//
+//protocol MapViewControllerDelegate {
+//    func annotationUpdate(mapViewController: MapViewController, withPin pin: Pin?)
+//}
 
-class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetchedResultsControllerDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetchedResultsControllerDelegate, CollectionViewControllerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet var longPress: UILongPressGestureRecognizer!
+    
+    //var delegate: MapViewControllerDelegate?
     
     var zoomDictionary = [String : AnyObject]()
     var locationManager = CLLocationManager()
@@ -25,6 +31,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     
     var alertMessage: String?
     
+    var pins = [Pin]()
     
     var region: MKCoordinateRegion {
         return MKCoordinateRegionMake(coordinate!, regionSpan!)
@@ -42,16 +49,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
         
-        let fetchRequest = NSFetchRequest(entityName: "Pin")
-        
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "longitude", ascending: true)]
-        
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-            managedObjectContext: self.sharedContext,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-        
-        return fetchedResultsController
+        return PinPhotos.sharedInstance().pinFetchedResultsController
+//        let fetchRequest = NSFetchRequest(entityName: "Pin")
+//        
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "longitude", ascending: true)]
+//        
+//        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+//            managedObjectContext: self.sharedContext,
+//            sectionNameKeyPath: nil,
+//            cacheName: nil)
+//        
+//        return fetchedResultsController
     }()
     
     struct Keys {
@@ -76,11 +84,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             alertUser()
         }
         
-        fetchedResultsController.delegate = self
-        
         mapView.delegate = self
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        
+        fetchedResultsController.delegate = self
+        pins = fetchedResultsController.fetchedObjects as! [Pin]
+        mapView.addAnnotations(pins)
         
         mapView.addGestureRecognizer(longPress)
         
@@ -96,16 +106,24 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         //deleteAllPins()
         //centerMapOnLocation()
         
+//        println("Updating annotations")
+//        if let annotations = mapView.annotations {
+//            
+//            mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
+//        }
+//        
+//        CoreDataStackManager.sharedInstance().saveContext()
+//
+//        var error: NSError? = nil
+//        
+//        if !sharedContext.save(&error) {
+//            alertMessage = "Error performing initial fetch: \(error)"
+//            
+//            println(alertMessage)
+//            alertUser()
+//        }
         
-        println("Updating annotations")
-        if let annotations = mapView.annotations {
-            
-            mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
-        }
-
-        CoreDataStackManager.sharedInstance().saveContext()
-        
-        mapView.addAnnotations(fetchedResultsController.fetchedObjects)
+        updateAnnotations()
         
         if let dictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
             zoomDictionary = dictionary
@@ -124,13 +142,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     override func viewWillDisappear(animated: Bool) {
         locationManager.stopUpdatingLocation()
         
-        super.viewWillDisappear(animated)
         //deleteAllPins()
         println("View will disappear")
-        
+        //mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
         // Ensure the coordinates of any dragged pins are updated.
-        CoreDataStackManager.sharedInstance().saveContext()
-        saveRegion()
+        // IMPORTANT : maybe won't need dragging
+        //CoreDataStackManager.sharedInstance().saveContext()
+        //saveRegion()
+        super.viewWillDisappear(animated)
     }
     
     @IBAction func longPressed(sender: AnyObject) {
@@ -159,7 +178,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                     self.locationManager.stopUpdatingLocation()
                     
                     let place = placemarks[0] as! CLPlacemark
-                    let placeText = "\(place.locality), \(place.administrativeArea)  \(place.country)"
+                    let locality = place.locality ?? "Unknown"
+                    let adminArea = place.administrativeArea ?? "Unknown"
+                    let country = place.country ?? "Unknown"
+                    
+                    let placeText = "\(locality), \(adminArea)  \(country)"
                     println("\(placeText)")
                     
                     let dictionary: [String : AnyObject] = [
@@ -223,15 +246,23 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         mapView.setRegion(region, animated: true)
     }
     
-    // maybe don't need this
+    func removeAnnotation(collectionViewController: CollectionViewController, withPin pin: Pin?) {
+        if let deadPin = pin {
+            println("Removing a pin")
+            self.mapView.removeAnnotation(pin)
+        }
+    }
+    
     func updateAnnotations() {
         
         println("Updating annotations")
         if let annotations = mapView.annotations {
-            
-            mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
-            
-            mapView.addAnnotations(fetchedResultsController.fetchedObjects)
+            pins = fetchedResultsController.fetchedObjects as! [Pin]
+            mapView.removeAnnotations(pins)
+            //PinPhotos.sharedInstance().cleanupPins()
+            //CoreDataStackManager.sharedInstance().saveContext()
+            pins = fetchedResultsController.fetchedObjects as! [Pin]
+            mapView.addAnnotations(pins)
             
         }
     }
@@ -296,7 +327,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             }
             
             let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (action) -> Void in
-                //self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismissViewControllerAnimated(true, completion: nil)
             }
             alertController.addAction(okAction)
             self.presentViewController(alertController, animated: true, completion: nil)

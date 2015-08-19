@@ -41,10 +41,12 @@ class Photo: NSManagedObject {
     // Variable for accessing photos in caches
     var photoImage: UIImage? {
         get {
+            println("Getting image at imagePath: \(imagePath)")
             return PinPhotos.Caches.imageCache.imageWithIdentifier(imagePath)
         }
         
         set {
+            println("Storing image at imagePath: \(imagePath)")
             PinPhotos.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)
         }
     }

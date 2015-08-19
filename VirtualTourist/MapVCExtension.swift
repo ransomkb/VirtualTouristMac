@@ -42,6 +42,8 @@ extension MapViewController: MKMapViewDelegate {
         controller.regionSpan = self.regionSpan
         println("Later Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         
-        self.navigationController!.pushViewController(controller, animated: true)
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.navigationController!.pushViewController(controller, animated: true)
+        }
     }
 }
