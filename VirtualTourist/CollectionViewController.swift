@@ -12,10 +12,11 @@ import MapKit
 import CoreLocation
 import CoreData
 
-protocol CollectionViewControllerDelegate {
-    func removeAnnotation(collectionViewController: CollectionViewController, withPin pin: Pin?)
-}
+//protocol CollectionViewControllerDelegate {
+//    func removeAnnotation(collectionViewController: CollectionViewController, withPin pin: Pin?)
+//}
 
+// Controls a collection view of photos, either stored locally or on Flickr.
 class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var navBar: UINavigationBar!
@@ -27,7 +28,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var newCollectionButton: UIButton!
     
-    var delegate: CollectionViewControllerDelegate?
+    //var delegate: CollectionViewControllerDelegate?
     
     private let reuseIdentifier = "PhotoCell"
     private let sectionInsets = UIEdgeInsets(top: 2.0, left: 2.0, bottom: 5.0, right: 2.0)
@@ -52,6 +53,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     var sharedContext: NSManagedObjectContext = CoreDataStackManager.sharedInstance().managedObjectContext!
     
+    // NEXT
     var region: MKCoordinateRegion {
         return MKCoordinateRegionMake(coordinate!, regionSpan!)
     }
@@ -132,6 +134,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         fetchedResultsController.performFetch(&error)
         
         if let error = error {
+            
+            // Use UIAlertController to inform user of issue.
             alertMessage = "Error performing initial fetch: \(error)"
             
             println(alertMessage)
@@ -201,6 +205,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                 //                    self.collectionView!.reloadData()
                 //                }
             } else {
+                
+                // Use UIAlertController to inform user of issue.
                 self.alertMessage = errorString
                 self.alertUser()
             }
@@ -211,14 +217,16 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     func fetchNewAlbum() {
         
         println("Fetching a New Album")
-        let pageLimit = PinPhotos.sharedInstance().pageLimit
-        println("Got a total of \(pageLimit) photos ready")
+//        let pageLimit = PinPhotos.sharedInstance().pageLimit
+//        println("Got a total of \(pageLimit) photos ready")
         
         PinPhotos.sharedInstance().getPhotosForAlbum(self, pin: self.pin) { (success, errorString) -> Void in
             if success {
                 println("Getting album photo succeeded. Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
                 self.newCollectionButton.hidden = false
             } else {
+                
+                // Use UIAlertController to inform user of issue.
                 self.alertMessage = errorString
                 self.alertUser()
             }
@@ -236,6 +244,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                 println("Getting album photo succeeded. Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
                 self.newCollectionButton.hidden = false
             } else {
+                
+                // Use UIAlertController to inform user of issue.
                 self.alertMessage = errorString
                 self.alertUser()
             }
@@ -323,14 +333,16 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         println("Number of Cells from collection view number of items in section: \(sectionInfo.numberOfObjects)")
         
-        let totalCells = PinPhotos.sharedInstance().pageLimit
-        println("Total Cells: \(PinPhotos.sharedInstance().pageLimit)")
+        return sectionInfo.numberOfObjects
         
-        if sectionInfo.numberOfObjects > 0 {
-            return sectionInfo.numberOfObjects
-        } else {
-            return totalCells
-        }
+//        let totalCells = PinPhotos.sharedInstance().pageLimit
+//        println("Total Cells: \(PinPhotos.sharedInstance().pageLimit)")
+//        
+//        if sectionInfo.numberOfObjects > 0 {
+//            return sectionInfo.numberOfObjects
+//        } else {
+//            return totalCells
+//        }
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -339,9 +351,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         cell.backgroundColor = UIColor.blackColor()
         cell.activityIndicator.startAnimating()
         
-        if self.fetchedResultsController.fetchedObjects!.count < PinPhotos.sharedInstance().pageLimit {
-            fetchPhoto()
-        }
+//        if self.fetchedResultsController.fetchedObjects!.count < PinPhotos.sharedInstance().pageLimit {
+//            fetchPhoto()
+//        }
+        //fetchPhoto()
+        
         println("CELL for item at index path: \(indexPath)")
         
         let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
@@ -460,6 +474,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     // MARK - Misc Activities
     
+    // Use UIAlertController to inform user of issue.
     func alertUser() {
         dispatch_async(dispatch_get_main_queue(), {
             let alertController = UIAlertController(title: "Problem", message: self.alertMessage, preferredStyle: .Alert)
@@ -489,7 +504,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         pinController.addAction(UIAlertAction(title: "Delete This Pin", style: .Destructive, handler: { (action: UIAlertAction!) -> Void in
             println("Deleting Pin")
-            self.delegate?.removeAnnotation(self, withPin: self.pin)
+            //self.delegate?.removeAnnotation(self, withPin: self.pin)
             
             PinPhotos.sharedInstance().deletePin(self.pin!)
             
@@ -521,6 +536,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         var error: NSError? = nil
         
         if !sharedContext.save(&error) {
+            
+            // Use UIAlertController to inform user of issue.
             alertMessage = "Error performing initial fetch: \(error)"
             
             println(alertMessage)

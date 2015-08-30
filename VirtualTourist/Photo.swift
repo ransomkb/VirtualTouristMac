@@ -11,6 +11,7 @@ import CoreData
 
 @objc(Photo)
 
+// Stores and manipulates CoreData entity objects called Photo
 class Photo: NSManagedObject {
     
     struct Keys {
@@ -24,29 +25,39 @@ class Photo: NSManagedObject {
     @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
     
+    // Initialize the super with the entity and context info.
     override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }
     
+    // Initialize the class with context and dictionary.
     init(dictionary: [String : AnyObject], context: NSManagedObjectContext) {
+        
+        // Create the Photo entity.
         let entity =  NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
         
+        // Initialize the super with the entity and context info.
         super.init(entity: entity,insertIntoManagedObjectContext: context)
         
+        // Set properties with dictionary data.
         id = dictionary[Keys.PhotoID] as! String
         title = dictionary[Keys.Title] as! String
         imagePath = dictionary[Keys.ImagePath] as? String
     }
     
-    // Variable for accessing photos in caches
+    // Computed property for accessing photos in caches
     var photoImage: UIImage? {
         get {
             println("Getting image at imagePath: \(imagePath)")
+            
+            // Return a cached image stored under the imagePath.
             return PinPhotos.Caches.imageCache.imageWithIdentifier(imagePath)
         }
         
         set {
             println("Storing image at imagePath: \(imagePath)")
+            
+            // Store or update the image in the cache under the imagePath.
             PinPhotos.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)
         }
     }

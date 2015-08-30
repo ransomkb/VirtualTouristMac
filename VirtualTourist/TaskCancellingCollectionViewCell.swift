@@ -19,14 +19,17 @@ class TaskCancellingCollectionViewCell: UICollectionViewCell {
     var imageName: String = ""
     
     var taskToCancelifCellIsReused: NSURLSessionTask? {
-        
         didSet {
+            
+            // Ensure there was a previous value.
             if let taskToCancel = oldValue {
                 taskToCancel.cancel()
             }
         }
     }
     
+    // IMPORTANT: may be unnecessary as selected is not used.
+    // Ensure all preparations have been made.
     override func awakeFromNib() {
         super.awakeFromNib()
         self.selected = false

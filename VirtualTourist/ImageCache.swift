@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  FavoriteActors
+//  VirtualTourist
 //
 //  Created by Jason on 1/31/15.
 //  Copyright (c) 2015 Udacity. All rights reserved.
@@ -25,7 +25,7 @@ class ImageCache {
         println("Getting image with identifier: \(path)")
         
         // why do we need this?
-        var data: NSData?
+        //var data: NSData?
         
         // First try the memory cache
         if let image = inMemoryCache.objectForKey(path) as? UIImage {
