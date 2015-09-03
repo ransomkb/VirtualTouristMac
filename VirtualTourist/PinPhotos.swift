@@ -408,32 +408,38 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         return Int(arc4random_uniform(UInt32(self.totalPages))) + 1
     }
     
-    func deletePin(pin: Pin) {
-        println("Deleting a pin")
-        deletePhotosForPin(pin)
-        //self.deletePins.append(pin)
-        sharedContext.deleteObject(pin)
-        CoreDataStackManager.sharedInstance().saveContext()
-    }
+//    func deletePin(pin: Pin) {
+//        println("Deleting a pin")
+//        deletePhotosForPin(pin)
+//        //self.deletePins.append(pin)
+//        sharedContext.deleteObject(pin)
+//        CoreDataStackManager.sharedInstance().saveContext()
+//    }
+//    
+//    func deleteAllPins() {
+//        println("Deleting pins")
+//        let fetched = pinFetchedResultsController.fetchedObjects
+//        
+//        fetched?.map() {
+//            //self.deletePins.append($0 as! Pin)
+//            self.deletePhotosForPin($0 as! Pin)
+//        }
+//        CoreDataStackManager.sharedInstance().saveContext()
+//    }
     
-    func deleteAllPins() {
-        println("Deleting pins")
-        let fetched = pinFetchedResultsController.fetchedObjects
-        
-        fetched?.map() {
-            //self.deletePins.append($0 as! Pin)
-            self.deletePhotosForPin($0 as! Pin)
-        }
-        CoreDataStackManager.sharedInstance().saveContext()
-    }
-    
+    // Delete all the photos related to a pin
     func deletePhotosForPin(pin: Pin) {
-        let photos = pin.photos as [Photo]
-        for p in photos {
+        
+        //let photos = pin.photos as [Photo]
+        
+        // Delete all the photos from the Pin.
+        for p in pin.photos as [Photo] {
             p.pin = nil
             p.photoImage = nil
             sharedContext.deleteObject(p)
         }
+        
+        // Save the context.
         CoreDataStackManager.sharedInstance().saveContext()
     }
     

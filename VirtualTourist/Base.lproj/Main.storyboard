@@ -74,11 +74,6 @@
                                                 <action selector="backToMap:" destination="Dq2-Pe-22X" id="0Op-bm-WpS"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" systemItem="cancel" id="IFQ-zM-HKR">
-                                            <connections>
-                                                <action selector="cancelActivities:" destination="Dq2-Pe-22X" id="aIv-yd-QhF"/>
-                                            </connections>
-                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -108,8 +103,8 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CJG-zA-UcV">
                                                     <rect key="frame" x="2" y="2" width="196" height="196"/>
                                                 </imageView>
-                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="BGc-2T-fCj">
-                                                    <rect key="frame" x="90" y="90" width="20" height="20"/>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="BGc-2T-fCj">
+                                                    <rect key="frame" x="81" y="81" width="37" height="37"/>
                                                 </activityIndicatorView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -162,7 +157,6 @@
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="cancelButton" destination="IFQ-zM-HKR" id="Ry7-ti-MJL"/>
                         <outlet property="collectionView" destination="Zaa-Tf-gS7" id="GxV-Wu-sC8"/>
                         <outlet property="mapView" destination="r1d-v5-owy" id="e3m-mG-48H"/>
                         <outlet property="navBar" destination="G19-Se-rUS" id="yV0-uG-7pD"/>
