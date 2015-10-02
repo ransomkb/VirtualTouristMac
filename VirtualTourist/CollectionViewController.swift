@@ -311,7 +311,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             cell.activityIndicator.startAnimating()
         })
         
-        var coordinateImage = UIImage(named: "posterPlaceHolder")
+        var coordinateImage = UIImage(named: "placeholder")
         
         cell.imageView!.image = nil
         

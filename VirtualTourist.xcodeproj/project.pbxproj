@@ -22,9 +22,9 @@
 		D45526361B4101FE004ADE62 /* PinPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526351B4101FE004ADE62 /* PinPhotos.swift */; };
 		D45526381B41024E004ADE62 /* PinPhotosConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45526371B41024E004ADE62 /* PinPhotosConstants.swift */; };
 		D455263C1B410834004ADE62 /* MapVCExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D455263B1B410834004ADE62 /* MapVCExtension.swift */; };
-		D455263E1B4126BC004ADE62 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */; };
 		D4724B081B49283A002E8951 /* TaskCancellingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4724B071B49283A002E8951 /* TaskCancellingCollectionViewCell.swift */; };
 		D4724B0A1B4938D4002E8951 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4724B091B4938D4002E8951 /* ImageCache.swift */; };
+		D49D3B241BBE25BD00F31315 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49D3B231BBE25BD00F31315 /* CoreDataStackManager.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,9 +57,9 @@
 		D45526351B4101FE004ADE62 /* PinPhotos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinPhotos.swift; sourceTree = "<group>"; };
 		D45526371B41024E004ADE62 /* PinPhotosConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinPhotosConstants.swift; sourceTree = "<group>"; };
 		D455263B1B410834004ADE62 /* MapVCExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapVCExtension.swift; sourceTree = "<group>"; };
-		D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStackManager.swift; path = "../../../../../Git Stuff/Udacity/Project 4/step-5.4/CoreDataFavoriteActors/FavoriteActors/CoreDataStackManager.swift"; sourceTree = "<group>"; };
 		D4724B071B49283A002E8951 /* TaskCancellingCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCancellingCollectionViewCell.swift; sourceTree = "<group>"; };
 		D4724B091B4938D4002E8951 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		D49D3B231BBE25BD00F31315 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,7 +158,7 @@
 				D45526261B40FBD4004ADE62 /* Photo.swift */,
 				D45526351B4101FE004ADE62 /* PinPhotos.swift */,
 				D45526371B41024E004ADE62 /* PinPhotosConstants.swift */,
-				D455263D1B4126BC004ADE62 /* CoreDataStackManager.swift */,
+				D49D3B231BBE25BD00F31315 /* CoreDataStackManager.swift */,
 				D4724B091B4938D4002E8951 /* ImageCache.swift */,
 				D45525F81B40F938004ADE62 /* VirtualTourist.xcdatamodeld */,
 			);
@@ -279,12 +279,12 @@
 				D45526271B40FBD4004ADE62 /* Photo.swift in Sources */,
 				D45525FA1B40F938004ADE62 /* VirtualTourist.xcdatamodeld in Sources */,
 				D45526251B40FB46004ADE62 /* Pin.swift in Sources */,
-				D455263E1B4126BC004ADE62 /* CoreDataStackManager.swift in Sources */,
 				D45526291B40FCF7004ADE62 /* MapViewController.swift in Sources */,
 				D45526381B41024E004ADE62 /* PinPhotosConstants.swift in Sources */,
 				D4724B0A1B4938D4002E8951 /* ImageCache.swift in Sources */,
 				D45525F71B40F938004ADE62 /* AppDelegate.swift in Sources */,
 				D4724B081B49283A002E8951 /* TaskCancellingCollectionViewCell.swift in Sources */,
+				D49D3B241BBE25BD00F31315 /* CoreDataStackManager.swift in Sources */,
 				D455263C1B410834004ADE62 /* MapVCExtension.swift in Sources */,
 				D45526361B4101FE004ADE62 /* PinPhotos.swift in Sources */,
 				D45526231B40FAE4004ADE62 /* CollectionViewController.swift in Sources */,
