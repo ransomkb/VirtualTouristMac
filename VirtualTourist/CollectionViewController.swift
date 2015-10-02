@@ -63,8 +63,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // Computed property pointing to the directory of the zoom data: zoomDictionary
     var filePath : String {
         let manager = NSFileManager.defaultManager()
-        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
-        return url.URLByAppendingPathComponent("zoomDictionary").path!
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first //as! NSURL
+        return url!.URLByAppendingPathComponent("zoomDictionary").path!
     }
     
     // Lazily computed property pointing to the Photo entity objects, sorted by title, predicated on the pin.
@@ -379,7 +379,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
-        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! TaskCancellingCollectionViewCell
+        _ = collectionView.cellForItemAtIndexPath(indexPath) as! TaskCancellingCollectionViewCell
         
         if let index = selectedIndexes.indexOf(indexPath) {
             selectedIndexes.removeAtIndex(index)
@@ -419,7 +419,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?)  {
         
         //println("Controller did change object; Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
         
@@ -440,8 +440,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             break
         case .Move:
             print("Moving an item. We don't expect to see this in this app.")
-            break
-        default:
             break
         }
     }

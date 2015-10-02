@@ -231,7 +231,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                             
                             // IMPORTANT: make this a temporary context, then check shared context for same id.
                             // Create a Photo class and entity value for each photo in the array using its dictionary.
-                            var photos = photosArray.map() {(dictionary: [String : AnyObject]) -> Photo in
+                            _ = photosArray.map() {(dictionary: [String : AnyObject]) -> Photo in
                                 let photo = Photo(dictionary: dictionary, context: self.sharedContext)
                                 
                                 // Set the pin variable in photo to that passed through this function.
@@ -301,7 +301,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             if let error = downloadError {
                 
                 // Create an error with json data from the response.
-                let newError = PinPhotos.errorForData(data, response: response, error: error)
+                _ = PinPhotos.errorForData(data, response: response, error: error)
                 
                 // Report the failure and the error data.
                 completionHandler(parsedResult: nil, error: downloadError)
@@ -310,7 +310,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                 
                 
                 // Parse JSON data using a completion handler to return the results.
-                PinPhotos.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                PinPhotos.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
             }
         }
         

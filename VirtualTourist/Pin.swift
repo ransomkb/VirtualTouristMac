@@ -61,7 +61,7 @@ class Pin: NSManagedObject, MKAnnotation {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
         // Use the dictionary to assign values to entity properties.
-        title = dictionary[Keys.Title] as! String
+        title = dictionary[Keys.Title] as? String
         address = dictionary[Keys.Address] as! String
         latitude = dictionary[Keys.Latitude] as! Double
         longitude = dictionary[Keys.Longitude] as! Double
@@ -92,17 +92,17 @@ class Pin: NSManagedObject, MKAnnotation {
             if (error != nil) {
                 
                 // Print the error.
-                let message = "Reverse geocoder for Pin failed with error: " + error.localizedDescription
+                let message = "Reverse geocoder for Pin failed with error: " + error!.localizedDescription
                 print("\(message)")
                 
                 return
             }
 
             // Make sure there is at least one place in the placemarkes array.
-            if placemarks.count > 0 {
-                
+            //if placemarks!.count > 0 {
+            if let place = placemarks!.first {
                 // Get the first place.
-                let place = placemarks[0] as! CLPlacemark
+                //let place = placemarks[0] //as! CLPlacemark
                 
                 // Set the variables of self.
                 self.title = "\(place.administrativeArea)"

@@ -38,8 +38,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     // Computed property storing the level of map-zoom between appearances.
     var filePath : String {
         let manager = NSFileManager.defaultManager()
-        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
-        return url.URLByAppendingPathComponent("zoomDictionary").path!
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first //as NSURL
+        return url!.URLByAppendingPathComponent("zoomDictionary").path!
     }
 
     // Computed property storing the shared context of the Core Data Stack.
@@ -205,7 +205,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                 if (error != nil) {
                     
                     // Use UIAlertController to inform user of issue.
-                    self.alertMessage = "Reverse geocoder failed with error: " + error.localizedDescription
+                    self.alertMessage = "Reverse geocoder failed with error: " + error!.localizedDescription
                     print("\(self.alertMessage)")
                     
                     self.alertUser()
@@ -214,13 +214,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                 }
                 
                 // Make sure there is at least one place in the placemarks array.
-                if placemarks.count > 0 {
-                    
+                //if placemarks!.count > 0 {
+                if let place = placemarks!.first {
                     // Stop updating the location manager while accessing this data.
                     self.locationManager.stopUpdatingLocation()
                     
                     // Create a placemark from the first object in the placemarks array.
-                    let place = placemarks[0] as! CLPlacemark
+                    //let place = placemarks[0] //as! CLPlacemark
                     
                     // Create strings showing the amount of data discovered at this location.
                     let locality = place.locality ?? "Unknown"
@@ -332,7 +332,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         print("Updating annotations")
         
         // Ensure there are annotations.
-        if let annotations = mapView.annotations {
+        //if let annotations = mapView.annotations as? [MKAnnotation] {
             
             // Update array of Pin objects to the fetched results controller array.
             pins = fetchedResultsController.fetchedObjects as! [Pin]
@@ -350,7 +350,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             
             // Add annotations using the data in each Pin in the array.
             mapView.addAnnotations(pins)
-        }
+        //}
     }
     
     // Check if location manager has authority to track current location.
@@ -369,7 +369,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     }
     
     // Handle update to location.
-    func locationManager(manager: CLLocationManager!, didUpdateToLocation newLocation: CLLocation!, fromLocation oldLocation: CLLocation!) {
+    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation) {
         
         // Reset mapView.
         coordinate = newLocation.coordinate
@@ -380,26 +380,26 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         // Get readable strings of location data.
-        CLGeocoder().reverseGeocodeLocation(manager.location, completionHandler: { (placemarks, error) -> Void in
+        CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: { (placemarks, error) -> Void in
             
             // Check for error
             if (error != nil) {
                 
                 // Use UIAlertController to inform user of issue.
-                self.alertMessage = "Reverse geocoder failed with error: " + error.localizedDescription
+                self.alertMessage = "Reverse geocoder failed with error: " + error!.localizedDescription
                 self.alertUser()
                 
                 return
             }
             
             // Ensure there is at least one placemark in the placemarks array.
-            if placemarks.count > 0 {
-                
+            //if placemarks!.count > 0 {
+            if let place = placemarks!.first {
                 // Stop updating location as no longer necessary.
                 self.locationManager.stopUpdatingLocation()
                 
                 // Get the first placemark.
-                self.placemark = placemarks[0] as! CLPlacemark
+                self.placemark = place
                 
                 print(self.placemark.locality)
                 print(self.placemark.postalCode)
@@ -407,14 +407,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                 print(self.placemark.country)
                 
                 // Ensure there is a placemark.
-                if let place = self.placemark {
+                //if let place = self.placemark {
                     
                     // IMPORTANT: should I do something else with this?
                     
                     // Create a formatted string of placemark data.
                     let placeText = "\(place.locality), \(place.administrativeArea)  \(place.country)"
                     print("\(placeText)")
-                }
+                //}
             }
         })
     }

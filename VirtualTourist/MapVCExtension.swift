@@ -13,7 +13,7 @@ import MapKit
 extension MapViewController: MKMapViewDelegate {
     
     // Set up the annotations on the map view using Pin data.
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView! {
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
         // Ensure can make a Pin based annotation.
         if let annotation = annotation as? Pin {
