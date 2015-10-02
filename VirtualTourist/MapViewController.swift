@@ -73,11 +73,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        println("View did load.")
+        print("View did load.")
         
         // Start the fetched results controller
         var error: NSError?
-        fetchedResultsController.performFetch(&error)
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         // Check for error.
         if let error = error {
@@ -85,7 +89,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             // Use UIAlertController to inform user of issue.
             alertMessage = "Error performing initial fetch: \(error)"
             
-            println(alertMessage)
+            print(alertMessage)
             alertUser()
         }
         
@@ -113,7 +117,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        println("View will appear.")
+        print("View will appear.")
         
         // Hide the navigation bar.
         self.navigationController?.navigationBarHidden = true
@@ -166,7 +170,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         locationManager.stopUpdatingLocation()
         
         //deleteAllPins()
-        println("View will disappear")
+        print("View will disappear")
         //mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
         // Ensure the coordinates of any dragged pins are updated.
         // IMPORTANT : maybe won't need dragging
@@ -181,15 +185,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         
         // Check if state is began.
         if longPress.state == .Began {
-            println("Long Press Began")
+            print("Long Press Began")
             
             // Create a point from the long press location of the map view.
             let point: CGPoint = longPress.locationInView(mapView)
             
             // Create a coordinate from the point.
             let fingerLocation: CLLocationCoordinate2D = mapView.convertPoint(point, toCoordinateFromView: mapView)
-            println("Finger lat: \(fingerLocation.latitude)")
-            println("Finger lon: \(fingerLocation.longitude)")
+            print("Finger lat: \(fingerLocation.latitude)")
+            print("Finger lon: \(fingerLocation.longitude)")
             
             // Create a location for the pin from the latitude and longitude.
             let pinLocation = CLLocation(latitude: fingerLocation.latitude, longitude: fingerLocation.longitude)
@@ -202,7 +206,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                     
                     // Use UIAlertController to inform user of issue.
                     self.alertMessage = "Reverse geocoder failed with error: " + error.localizedDescription
-                    println("\(self.alertMessage)")
+                    print("\(self.alertMessage)")
                     
                     self.alertUser()
                     
@@ -225,7 +229,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                     
                     // Create a more readable format (like City, State Country) for the Pin.
                     let placeText = "\(locality), \(adminArea)  \(country)"
-                    println("\(placeText)")
+                    print("\(placeText)")
                     
                     // Create a dictionary of keys and values necessary for creating a Pin object.
                     let dictionary: [String : AnyObject] = [
@@ -248,7 +252,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             
             // Check if state is ended.
         } else if longPress.state == .Ended {
-            println("Long Press Ended")
+            print("Long Press Ended")
         }
     }
     
@@ -285,14 +289,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     
     // Save the region to file
     func saveRegion() {
-        println("Saving region and zoom.")
-        println("First saving Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
+        print("Saving region and zoom.")
+        print("First saving Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         
         // Set coordinate and region span to the present map view data.
         coordinate = mapView.region.center
         regionSpan = mapView.region.span
         
-        println("Second saving Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
+        print("Second saving Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         
         // Ensure there is a coordinate.
         if let coord = coordinate {
@@ -325,7 +329,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     // IMPORTANT: this needs to be fixed.
     // Update the annotations to reflect Pin changes.
     func updateAnnotations() {
-        println("Updating annotations")
+        print("Updating annotations")
         
         // Ensure there are annotations.
         if let annotations = mapView.annotations {
@@ -373,7 +377,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     }
     
     // Inform stakeholders that location was updated by location manager.
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         // Get readable strings of location data.
         CLGeocoder().reverseGeocodeLocation(manager.location, completionHandler: { (placemarks, error) -> Void in
@@ -397,10 +401,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                 // Get the first placemark.
                 self.placemark = placemarks[0] as! CLPlacemark
                 
-                println(self.placemark.locality)
-                println(self.placemark.postalCode)
-                println(self.placemark.administrativeArea)
-                println(self.placemark.country)
+                print(self.placemark.locality)
+                print(self.placemark.postalCode)
+                print(self.placemark.administrativeArea)
+                print(self.placemark.country)
                 
                 // Ensure there is a placemark.
                 if let place = self.placemark {
@@ -409,24 +413,24 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                     
                     // Create a formatted string of placemark data.
                     let placeText = "\(place.locality), \(place.administrativeArea)  \(place.country)"
-                    println("\(placeText)")
+                    print("\(placeText)")
                 }
             }
         })
     }
     
     // Handle changed authorization status for location manager.
-    func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         
         // Make user location available if authorized.
         self.mapView.showsUserLocation = (status == .AuthorizedAlways)
     }
     
     // Handle failed with error for location manager.
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         
         // Use UIAlertController to inform user of issue.
-        var errorString = "Error while updating location " + error.localizedDescription
+        let errorString = "Error while updating location " + error.localizedDescription
         self.alertMessage = errorString
         self.alertUser()
     }

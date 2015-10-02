@@ -23,7 +23,7 @@ class Pin: NSManagedObject, MKAnnotation {
         static let Longitude = "longitude"
     }
     
-    @NSManaged var title: String
+    @NSManaged var title: String?
     @NSManaged var address: String
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
@@ -35,7 +35,7 @@ class Pin: NSManagedObject, MKAnnotation {
         get {
             let lat: CLLocationDegrees = latitude
             let lon: CLLocationDegrees = longitude
-            var coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+            let coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
             return coords
         }
         
@@ -66,16 +66,16 @@ class Pin: NSManagedObject, MKAnnotation {
         latitude = dictionary[Keys.Latitude] as! Double
         longitude = dictionary[Keys.Longitude] as! Double
         
-        println("Title: \(title)")
-        println("Address: \(address)")
-        println("Latitude: \(latitude)")
-        println("Longitude: \(longitude)")
-        println("Coordinate lat: \(coordinate.latitude)")
-        println("Coordinate lon: \(coordinate.longitude)")
+        print("Title: \(title)")
+        print("Address: \(address)")
+        print("Latitude: \(latitude)")
+        print("Longitude: \(longitude)")
+        print("Coordinate lat: \(coordinate.latitude)")
+        print("Coordinate lon: \(coordinate.longitude)")
     }
     
     // Computed property for pin annotation.
-    var subtitle: String {
+    var subtitle: String? {
         return address
     }
     
@@ -93,7 +93,7 @@ class Pin: NSManagedObject, MKAnnotation {
                 
                 // Print the error.
                 let message = "Reverse geocoder for Pin failed with error: " + error.localizedDescription
-                println("\(message)")
+                print("\(message)")
                 
                 return
             }
@@ -108,7 +108,7 @@ class Pin: NSManagedObject, MKAnnotation {
                 self.title = "\(place.administrativeArea)"
                 self.address = "\(place.locality), \(place.administrativeArea)  \(place.country)"
                 
-                println("\(self.address)")
+                print("\(self.address)")
             }
         })
     }

@@ -22,7 +22,7 @@ class ImageCache {
         }
         
         let path = pathForIdentifier(identifier!)
-        println("Getting image with identifier: \(path)")
+        print("Getting image with identifier: \(path)")
         
         // why do we need this?
         //var data: NSData?
@@ -44,16 +44,19 @@ class ImageCache {
     
     func storeImage(image: UIImage?, withIdentifier identifier: String) {
         
-        println("Storing image")
+        print("Storing image")
         let path = pathForIdentifier(identifier)
-        println("Stored at path: \(path)")
+        print("Stored at path: \(path)")
         
         // If the image is nil, remove images from the cache
         if image == nil {
             
-            println("Removing the object at path: \(path)")
+            print("Removing the object at path: \(path)")
             inMemoryCache.removeObjectForKey(path)
-            NSFileManager.defaultManager().removeItemAtPath(path, error: nil)
+            do {
+                try NSFileManager.defaultManager().removeItemAtPath(path)
+            } catch _ {
+            }
             return
         }
         

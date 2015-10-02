@@ -110,7 +110,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             task.cancel()
         }
         
-        println("Canceled: Deleting photos")
+        print("Canceled: Deleting photos")
         
         // Delete photos related to the Pin.
         PinPhotos.sharedInstance().deletePhotosForPin(self.pin!)
@@ -121,14 +121,14 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     // Fetch a new collection of photos from Flickr at the location of the Pin.
     @IBAction func fetchNewCollection(sender: AnyObject) {
-        println("Fetch new collection tapped")
+        print("Fetch new collection tapped")
         
         // Cancel the most recent task if running.
         if let task = searchTask {
             task.cancel()
         }
         
-        println("NewCollection: Deleting photos")
+        print("NewCollection: Deleting photos")
         
         // Delete all photos related to this Pin.
         PinPhotos.sharedInstance().deletePhotosForPin(self.pin!)
@@ -143,11 +143,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        println("Collection View did load.")
+        print("Collection View did load.")
         
         // Ensure there is a pin.
         if let pin = pin {
-            println("Collection Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
+            print("Collection Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
             
             // Compute the coordinate property.
             coordinate = pin.coordinate
@@ -159,7 +159,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         // Start the fetched results controller
         var error: NSError?
-        fetchedResultsController.performFetch(&error)
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error1 as NSError {
+            error = error1
+        }
         
         // Handle an error.
         if let error = error {
@@ -167,7 +171,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             // Use UIAlertController to inform user of issue.
             alertMessage = "Error performing initial fetch: \(error)"
             
-            println(alertMessage)
+            print(alertMessage)
             alertUser()
         }
         
@@ -175,12 +179,12 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         fetchedResultsController.delegate = self
         mapView.delegate = self
         
-        println("View  did load. Photos in fetched objects: \(fetchedResultsController.fetchedObjects!.count)")
+        print("View  did load. Photos in fetched objects: \(fetchedResultsController.fetchedObjects!.count)")
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        println("Collection View will appear")
+        print("Collection View will appear")
         
         // Set the region to be shown in the map view.
         mapView.setRegion(region, animated: true)
@@ -193,14 +197,14 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             
             // Hide the New Collection button as no collection yet, so we will fetch one automatically.
             newCollectionButton.hidden = true
-            println("pin.photos is empty")
+            print("pin.photos is empty")
             
             // Fetch all pages of photos on Flickr at the location of this Pin in order to get a page count.
             // Fetch all photos for a randomly chosen page.
             fetchTotalPages()
         }
         
-        println("View will appear. Photos in fetched objects: \(fetchedResultsController.fetchedObjects!.count)")
+        print("View will appear. Photos in fetched objects: \(fetchedResultsController.fetchedObjects!.count)")
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -217,7 +221,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
 //            fetchTotalPages()
 //        }
         
-        println("View did appear. Photos in fetched objects after getting album: \(self.fetchedResultsController.fetchedObjects!.count)")
+        print("View did appear. Photos in fetched objects after getting album: \(self.fetchedResultsController.fetchedObjects!.count)")
     }
     
     // Pop down to the root navigation controller via main queue.
@@ -231,12 +235,12 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // Fetch all photos for a randomly chosen page.
     func fetchTotalPages() {
         
-        println("Fetching Total Pages")
+        print("Fetching Total Pages")
         
         // Use a completion handler to show success of getting a total page count.
         PinPhotos.sharedInstance().getTotalPhotos(self, pin: pin) { (success, errorString) -> Void in
             if success {
-                println("Did Set Total pages: \(PinPhotos.sharedInstance().totalPages)")
+                print("Did Set Total pages: \(PinPhotos.sharedInstance().totalPages)")
                 
                 // Get all the photos on a randomly chosen page.
                 self.fetchPhotos()
@@ -259,7 +263,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             
             // Check completion handler for success.
             if success {
-                println("Getting album photo succeeded. Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
+                print("Getting album photo succeeded. Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
                 
                 // Save the changes.
                 CoreDataStackManager.sharedInstance().saveContext()
@@ -280,7 +284,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        println("Checking collection view layout size for item at index path.")
+        print("Checking collection view layout size for item at index path.")
         //let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
 //        if var size = photo.thumbnail?.size {
@@ -292,7 +296,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
-        println("Checking collection view layout inset for section: \(section) at index.")
+        print("Checking collection view layout inset for section: \(section) at index.")
         //println("Section Insets: \(sectionInsets)")
         return sectionInsets
     }
@@ -300,7 +304,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK - Configure Cell
     // maybe do not need
     func configureCell(cell: TaskCancellingCollectionViewCell, photo: Photo) {
-        println("Configuring a cell")
+        print("Configuring a cell")
         
         dispatch_async(dispatch_get_main_queue(), {
             cell.backgroundColor = UIColor.blackColor()
@@ -313,15 +317,15 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         // Set the Photo Image
         if photo.imagePath == nil || photo.imagePath == "" {
-            println("No Image")
+            print("No Image")
             coordinateImage = UIImage(named: "noImage")
         } else if photo.photoImage != nil {
-            println("PhotoImage is not nil")
+            print("PhotoImage is not nil")
             coordinateImage = photo.photoImage
         } else {
-            println("Photo has an image name, but it has not been downloaded yet.")
+            print("Photo has an image name, but it has not been downloaded yet.")
             
-            println(photo.imagePath)
+            print(photo.imagePath)
             let imageURL = NSURL(string: photo.imagePath!)
             
             if let imageData = NSData(contentsOfURL: imageURL!) {
@@ -344,14 +348,14 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         let sectionCount = self.fetchedResultsController.sections?.count ?? 0
         
-        println("Section count: \(sectionCount)")
+        print("Section count: \(sectionCount)")
         return sectionCount
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let sectionInfo = self.fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
+        let sectionInfo = self.fetchedResultsController.sections![section] 
         
-        println("Number of Cells from collection view number of items in section: \(sectionInfo.numberOfObjects)")
+        print("Number of Cells from collection view number of items in section: \(sectionInfo.numberOfObjects)")
         
         return sectionInfo.numberOfObjects
     }
@@ -364,7 +368,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         // Create a cell from the identifier.
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! TaskCancellingCollectionViewCell
         
-        println("CELL for item at index path: \(indexPath)")
+        print("CELL for item at index path: \(indexPath)")
         
         self.configureCell(cell, photo: photo)
         
@@ -377,7 +381,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! TaskCancellingCollectionViewCell
         
-        if let index = find(selectedIndexes, indexPath) {
+        if let index = selectedIndexes.indexOf(indexPath) {
             selectedIndexes.removeAtIndex(index)
         } else {
             selectedIndexes.append(indexPath)
@@ -402,7 +406,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         
-        println("Did change section.")
+        print("Did change section.")
         switch type {
         case .Insert:
             self.collectionView.insertSections(NSIndexSet(index: sectionIndex))
@@ -415,27 +419,27 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
         //println("Controller did change object; Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
         
         switch type{
             
         case .Insert:
-            println("Inserting an item")
+            print("Inserting an item")
             insertedIndexPaths.append(newIndexPath!)
             break
         case .Delete:
-            println("Deleting an item")
+            print("Deleting an item")
             deletedIndexPaths.append(indexPath!)
             break
         case .Update:
-            println("Updating an item.")
+            print("Updating an item.")
             updatedIndexPaths.append(indexPath!)
             updatedIndexPaths.append(newIndexPath!)
             break
         case .Move:
-            println("Moving an item. We don't expect to see this in this app.")
+            print("Moving an item. We don't expect to see this in this app.")
             break
         default:
             break
@@ -443,32 +447,32 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        println("HEY!!! in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
+        print("HEY!!! in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
         
         
         CoreDataStackManager.sharedInstance().saveContext()
         
         self.collectionView.performBatchUpdates({() -> Void in
             
-            println("Inserting items at index paths")
+            print("Inserting items at index paths")
             
             // Insert items at inserted indexPaths.
             self.collectionView.insertItemsAtIndexPaths(self.insertedIndexPaths)
             
-            println("Deleting items at index paths")
+            print("Deleting items at index paths")
             
             // Delete items at deletedIndexPaths.
             self.collectionView.deleteItemsAtIndexPaths(self.deletedIndexPaths)
             return
             }, completion: { completed in
                 if completed {
-                    println("Reloading items at index paths")
+                    print("Reloading items at index paths")
                     
                     // Reload updated indexpaths.
                     self.collectionView.reloadItemsAtIndexPaths(self.updatedIndexPaths)
                     
-                    println("Batch update completed")
-                    println("Controller did change content; Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
+                    print("Batch update completed")
+                    print("Controller did change content; Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
                 }
         })
         
@@ -558,12 +562,15 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         sharedContext.deleteObject(photo)
         
         // Check for error.
-        if !sharedContext.save(&error) {
+        do {
+            try sharedContext.save()
+        } catch let error1 as NSError {
+            error = error1
             
             // Use UIAlertController to inform user of issue.
             alertMessage = "Error performing initial fetch: \(error)"
             
-            println(alertMessage)
+            print(alertMessage)
             alertUser()
         }
     }

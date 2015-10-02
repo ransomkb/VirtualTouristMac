@@ -48,14 +48,14 @@ class Photo: NSManagedObject {
     // Computed property for accessing photos in caches
     var photoImage: UIImage? {
         get {
-            println("Getting image at imagePath: \(imagePath)")
+            print("Getting image at imagePath: \(imagePath)")
             
             // Return a cached image stored under the imagePath.
             return PinPhotos.Caches.imageCache.imageWithIdentifier(imagePath)
         }
         
         set {
-            println("Storing image at imagePath: \(imagePath)")
+            print("Storing image at imagePath: \(imagePath)")
             
             // Store or update the image in the cache under the imagePath.
             PinPhotos.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)

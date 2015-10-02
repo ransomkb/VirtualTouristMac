@@ -218,6 +218,8 @@
 		D45525E91B40F938004ADE62 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Ransom Barber";
 				TargetAttributes = {

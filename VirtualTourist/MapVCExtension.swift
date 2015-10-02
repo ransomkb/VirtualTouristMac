@@ -13,7 +13,7 @@ import MapKit
 extension MapViewController: MKMapViewDelegate {
     
     // Set up the annotations on the map view using Pin data.
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView! {
         
         // Ensure can make a Pin based annotation.
         if let annotation = annotation as? Pin {
@@ -39,7 +39,7 @@ extension MapViewController: MKMapViewDelegate {
                 view.calloutOffset = CGPoint(x: -5, y: 5)
                 
                 // Add a Detail Disclosure type of accessory view to right side of the call out.
-                view.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIView
+                view.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure) as UIView
                 
                 //IMPORTANT: DON'T NEED TO DRAG IT.
                 //view.draggable = true
@@ -55,7 +55,7 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     // Handle the tapping of the call out accessory control for map view.
-    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
         // Create a pin from the specific Pin of the annotation view.
         let pin = view.annotation as! Pin
@@ -65,15 +65,15 @@ extension MapViewController: MKMapViewDelegate {
         
         // Set the collection view pin to the annotation pin.
         controller.pin = pin
-        println("Callout accessory tapped.")
-        println("Before Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
+        print("Callout accessory tapped.")
+        print("Before Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         
         // Make sure zoom data is saved before segue.
         self.saveRegion()
         
         // Set the zoom span for the collection view map as well.
         controller.regionSpan = self.regionSpan
-        println("Later Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
+        print("Later Region Span Lat: \(self.regionSpan?.latitudeDelta), Lon: \(self.regionSpan?.longitudeDelta)")
         
         // Push collection view controller onto main queue.
         NSOperationQueue.mainQueue().addOperationWithBlock {

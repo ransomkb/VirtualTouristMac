@@ -78,7 +78,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         let top_right_lat = min(latitude + BBox.BOUNDING_BOX_HALF_HEIGHT, BBox.LAT_MAX)
         
         let bboxString = "\(bottom_left_long),\(bottom_left_lat),\(top_right_long),\(top_right_lat)"
-        println("\(bboxString)")
+        print("\(bboxString)")
         
         return bboxString
     }
@@ -90,7 +90,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         //println("Photos in fetched objects get album start: \(fetchedResultsController.fetchedObjects!.count)")
         
         // Create the dictionary of arguments for request with BBox from Pin.
-        var methodArguments: [String: AnyObject] = [
+        let methodArguments: [String: AnyObject] = [
             "method": PinPhotos.API.METHOD_NAME,
             "api_key": PinPhotos.API.API_KEY,
             "bbox": createBoundingBoxString(pin),
@@ -101,7 +101,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             "per_page": PinPhotos.API.PerPage
         ]
         
-        println("Getting a page number.")
+        print("Getting a page number.")
         
         // Assign a search task using request arguments.
         // Use a completion handler to return the parsed json results.
@@ -112,7 +112,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                 
                 // Report error with localized string.
                 let eString = "Error searching for photos: \(error.localizedDescription)"
-                println(eString)
+                print(eString)
                 
                 // Report failure and error details.
                 completionHandler(success: false, errorString: eString)
@@ -121,11 +121,11 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             
             // Make sure there is a photos key.
             if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
-                println("Got some photos")
+                print("Got some photos")
                 
                 // Make sure there is a pages key pointing to total number of pages.
                 if let totalPages = photosDictionary["pages"] as? Int {
-                    println("Total pages: \(totalPages)")
+                    print("Total pages: \(totalPages)")
                     
                     // Set totalPages for future fetching with random selection.
                     self.totalPages = totalPages
@@ -141,7 +141,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                     
                     // Create string to explain that there is no key called pages in the json dictionary.
                     let eString = "Can't find key 'pages' in \(photosDictionary)"
-                    println(eString)
+                    print(eString)
                     
                     // Report failure and error details.
                     completionHandler(success: false, errorString: eString)
@@ -150,7 +150,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                 
                 // Create string to explain that there is no key called photos in the parsed json.
                 let eString = "Can't find key 'photos' in \(parsedResult)"
-                println(eString)
+                print(eString)
                 
                 // Report failure and error details.
                 completionHandler(success: false, errorString: eString)
@@ -163,7 +163,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     func getPhotosForAlbum(hostViewController: UIViewController, pin: Pin, completionHandler: (success: Bool, errorString: String?) -> Void) {
         
         // Create the dictionary of arguments for request with BBox from Pin.
-        var methodArguments: [String: AnyObject] = [
+        let methodArguments: [String: AnyObject] = [
             "method": PinPhotos.API.METHOD_NAME,
             "api_key": PinPhotos.API.API_KEY,
             "bbox": createBoundingBoxString(pin),
@@ -179,7 +179,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         // Return an integer generated randomly from the total number of pages.
         let page = self.randomPageGenerator()
             
-            println("Getting a photo for page: \(page)")
+            print("Getting a photo for page: \(page)")
         
         // Create a new argument dictionary with additional key called page to limit number of photos returned.
             var withPageDictionary: [String:AnyObject] = methodArguments
@@ -194,7 +194,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                     
                     // Report error with localized string.
                     let eString = "Error searching for photos: \(error.localizedDescription)"
-                    println(eString)
+                    print(eString)
                     
                     // Report failure and error details.
                     completionHandler(success: false, errorString: eString)
@@ -222,12 +222,12 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                 // Make sure at least one photo.
                     if totalPhotosValue > 0 {
                         
-                        println("Total photos: \(totalPhotosValue)")
+                        print("Total photos: \(totalPhotosValue)")
                         
                         // Make sure there is a photo key to retrieve the array of dictionaries of photo details from the parsed JSON.
                         if let photosArray = photosDictionary["photo"] as? [[String:AnyObject]] {
                             
-                            println("Creating array of Photo entities from photo dictionary: \(photosArray)")
+                            print("Creating array of Photo entities from photo dictionary: \(photosArray)")
                             
                             // IMPORTANT: make this a temporary context, then check shared context for same id.
                             // Create a Photo class and entity value for each photo in the array using its dictionary.
@@ -236,7 +236,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                                 
                                 // Set the pin variable in photo to that passed through this function.
                                 photo.pin = pin
-                                println("Photo image path: \(photo.imagePath)")
+                                print("Photo image path: \(photo.imagePath)")
                                 return photo
                             }
                             
@@ -282,11 +282,11 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     // Use a completion handler to return parsed json data.
     func taskForResource(parameters: [String : AnyObject], completionHandler: CompletionHander) -> NSURLSessionDataTask {
         
-        println("Starting Task")
+        print("Starting Task")
         
         // Create the string of the url from the base url and the escaped parameters.
         let urlString = API.BASE_URL + escapedParameters(parameters)
-        println("URL String: \(urlString)")
+        print("URL String: \(urlString)")
         let url = NSURL(string: urlString)
         
         // Create the request from the url string.
@@ -295,7 +295,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         // Create a session data task from the request.
         // Use a completion handler to deal with response data.
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
-            println("Task started, URL String: \(urlString)")
+            print("Task started, URL String: \(urlString)")
             
             // Check if there is an error.
             if let error = downloadError {
@@ -306,7 +306,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                 // Report the failure and the error data.
                 completionHandler(parsedResult: nil, error: downloadError)
             } else {
-                println("taskForResource's completionHandler is invoked.")
+                print("taskForResource's completionHandler is invoked.")
                 
                 
                 // Parse JSON data using a completion handler to return the results.
@@ -322,10 +322,10 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     // Create an error with json data from the response.
     class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError {
         
-        println("Handling Error")
+        print("Handling Error")
         
         // Check that there is a dictionary of json data.
-        if let parsedResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments, error: nil) as? [String : AnyObject] {
+        if let parsedResult = (try? NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as? [String : AnyObject] {
             
             // Check that there is a key correspoding to the error status message.
             if let errorMessage = parsedResult[Keys.ErrorStatusMessage] as? String {
@@ -345,12 +345,18 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     // Parse JSON data using a completion handler to return the results.
     class func parseJSONWithCompletionHandler(data: NSData, completionHandler: CompletionHander) {
         
-        println("Parsing JSON")
+        print("Parsing JSON")
         var parsingError: NSError? = nil
         
         // Parse the json data in the response result.
-        let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
-        println("Parsed Result: \(parsedResult)")
+        let parsedResult: AnyObject?
+        do {
+            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+        } catch let error as NSError {
+            parsingError = error
+            parsedResult = nil
+        }
+        print("Parsed Result: \(parsedResult)")
         
         // Check for a parsing error.
         if let error = parsingError {
@@ -366,7 +372,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     
     // Escape the parameters dictionary objects to create a string suitable for the url of a RESTful request.
     func escapedParameters(parameters: [String : AnyObject]) -> String {
-        println("Escaping Parameters")
+        print("Escaping Parameters")
         
         // Create an array of string variables for the url.
         var urlVars = [String]()
@@ -387,7 +393,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         }
         
         // Return string of joined url variables separated by &.
-        return (!urlVars.isEmpty ? "?" : "") + join("&", urlVars)
+        return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
     
 //    func cleanupPins() {
