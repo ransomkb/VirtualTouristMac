@@ -23,7 +23,6 @@
                                 <gestureRecognizers/>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="Ewd-Cg-3IW" appends="YES" id="vMo-IN-ALT"/>
-                                    <outletCollection property="gestureRecognizers" destination="Ewd-Cg-3IW" appends="YES" id="7hv-0I-YMv"/>
                                 </connections>
                             </mapView>
                         </subviews>
@@ -36,9 +35,6 @@
                             <constraint firstAttribute="trailing" secondItem="742-ba-fXe" secondAttribute="trailing" id="ap7-1Z-S92"/>
                             <constraint firstItem="742-ba-fXe" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="s0z-ZZ-Jsp"/>
                         </constraints>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="Ewd-Cg-3IW" appends="YES" id="MZf-fo-bbU"/>
-                        </connections>
                     </view>
                     <navigationItem key="navigationItem" id="Hb7-c1-QDF"/>
                     <connections>
@@ -106,7 +102,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CJG-zA-UcV">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="CJG-zA-UcV">
                                                     <rect key="frame" x="2" y="2" width="196" height="196"/>
                                                     <animations/>
                                                 </imageView>
@@ -199,4 +195,7 @@
             <point key="canvasLocation" x="235" y="-388"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="placeholder" width="196" height="196"/>
+    </resources>
 </document>

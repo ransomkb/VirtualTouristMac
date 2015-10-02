@@ -318,7 +318,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         // Set the Photo Image
         if photo.imagePath == nil || photo.imagePath == "" {
             print("No Image")
-            coordinateImage = UIImage(named: "noImage")
+            coordinateImage = UIImage(named: "placeholder")
         } else if photo.photoImage != nil {
             print("PhotoImage is not nil")
             coordinateImage = photo.photoImage
@@ -329,9 +329,10 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             let imageURL = NSURL(string: photo.imagePath!)
             
             if let imageData = NSData(contentsOfURL: imageURL!) {
-                
+                print("Got imageDate from imageURL")
                 photo.photoImage = UIImage(data: imageData)
-                coordinateImage = photo.photoImage
+                // IMPORTANT: uncomment this after placeholders are working
+                //coordinateImage = photo.photoImage
             }
         }
         

@@ -128,12 +128,11 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                     print("Total pages: \(totalPages)")
                     
                     // Set totalPages for future fetching with random selection.
-                    self.totalPages = totalPages
-                    
-                    // IMPORTANT: change this back to 42 before submission; Is this right? something seems odd; min or max?
-                    // Set the pageLimit for a random minimum
-                    //self.pageLimit = min(totalPages, 6)
-                    //println("Page limit: \(self.pageLimit)")
+                    if totalPages > 190 {
+                        self.totalPages = 190
+                    } else {
+                        self.totalPages = totalPages
+                    }
                     
                     // Report success.
                     completionHandler(success: true, errorString: nil)

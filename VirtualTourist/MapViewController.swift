@@ -75,6 +75,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         super.viewDidLoad()
         print("View did load.")
         
+        listFilesFromDocumentsFolder()
+        
         // Start the fetched results controller
         var error: NSError?
         do {
@@ -460,6 +462,27 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             // Present alert controller.
             self.presentViewController(alertController, animated: true, completion: nil)
         })
+    }
+    
+    func listFilesFromDocumentsFolder() {
+        print("Trying to show directory")
+        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        print("Paths: \(paths)")
+        let documentsDirectory = paths.first
+        print("First Path / Directory: \(documentsDirectory)")
+        //var directoryList = [String]()
+        do {
+            let directoryList = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsDirectory!) as [String]
+            print("Files in Documents folder:")
+            for d in directoryList {
+                //directoriesString.appendContentsOf(d)
+                print("\(d)")
+            }
+        } catch _ {
+            print("Error in try statement for contents of directory")
+        }
+        
+        
     }
     
 }
