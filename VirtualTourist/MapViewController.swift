@@ -44,7 +44,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
 
     // Computed property storing the shared context of the Core Data Stack.
     var sharedContext: NSManagedObjectContext {
-        return CoreDataStackManager.sharedInstance().managedObjectContext!
+        return CoreDataStackManager.sharedInstance().managedObjectContext
     }
     
     // Computed property returning the Pin fetch results controller from the shared instance of PinPhotos.
@@ -83,17 +83,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             try fetchedResultsController.performFetch()
         } catch let error1 as NSError {
             error = error1
-        }
-        
-        // Check for error.
-        if let error = error {
-            
             // Use UIAlertController to inform user of issue.
             alertMessage = "Error performing initial fetch: \(error)"
             
             print(alertMessage)
             alertUser()
         }
+        
         
         // Make self the delegate of map view, location manager, and fetched results controller.
         mapView.delegate = self
@@ -246,6 +242,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                     
                     // Save the data to Core Data.
                     CoreDataStackManager.sharedInstance().saveContext()
+                    
+                    // Confirm pin was saved.
+                    let pins: [Pin] = self.fetchedResultsController.fetchedObjects as! [Pin]
+                    print("A pin was added. Now results count: \(pins.count)")
                     
                     // Add the newest Pin to the annotations array
                     self.mapView.addAnnotation(newPin)
@@ -453,7 +453,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             
             // Set up an OK action button on alert.
             let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (action) -> Void in
-                self.dismissViewControllerAnimated(true, completion: nil)
+                //self.dismissViewControllerAnimated(true, completion: nil)
             }
             
             // Add OK action button to alert.
@@ -464,6 +464,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         })
     }
     
+    // IMPORTANT: Used for debugging directory and saving.
     func listFilesFromDocumentsFolder() {
         print("Trying to show directory")
         let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
@@ -482,7 +483,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             print("Error in try statement for contents of directory")
         }
         
-        
+        // To see what is in the Resources folder?/group? of the bundle (which should include the Documents folder)
+        let bundle = NSBundle.mainBundle()
+        let resourcePath = bundle.resourcePath
+        let documentsPath = resourcePath?.stringByAppendingString("Documents")
+        print("Printing out Bundle")
+        print(documentsPath)
     }
     
 }

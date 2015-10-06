@@ -105,8 +105,13 @@ class Pin: NSManagedObject, MKAnnotation {
                 //let place = placemarks[0] //as! CLPlacemark
                 
                 // Set the variables of self.
-                self.title = "\(place.administrativeArea)"
-                self.address = "\(place.locality), \(place.administrativeArea)  \(place.country)"
+                //if let area = place.administrativeArea {
+                    self.title = "\(place.administrativeArea)"
+                    self.address = "\(place.locality), \(place.administrativeArea)  \(place.country)"
+                //} else {
+//                    self.title! = "Unknown"
+//                    self.address = ""
+                //}
                 
                 print("\(self.address)")
             }

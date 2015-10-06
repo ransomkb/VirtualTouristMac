@@ -43,6 +43,13 @@ class Photo: NSManagedObject {
         id = dictionary[Keys.PhotoID] as! String
         title = dictionary[Keys.Title] as! String
         imagePath = dictionary[Keys.ImagePath] as? String
+        if let wholeString = imagePath {
+            print("udacity was true, so getting subset of data.")
+            /* subset response data! */
+            let subString = wholeString.substringFromIndex((imagePath?.startIndex.advancedBy(8))!)
+            imagePath = subString // Maybe 8 is better if starts from
+            //subdataWithRange(NSMakeRange(5, imagePath.length - 5))
+        }
     }
     
     // Computed property for accessing photos in caches

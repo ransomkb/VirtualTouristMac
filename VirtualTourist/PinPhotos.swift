@@ -34,7 +34,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     
     // Computed property for a shared context of Core Data.
     var sharedContext: NSManagedObjectContext {
-        return CoreDataStackManager.sharedInstance().managedObjectContext!
+        return CoreDataStackManager.sharedInstance().managedObjectContext
     }
     
     // Lazy computed property returning a fetched results controller for Pin entities sorted by longitude.
@@ -466,6 +466,14 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     struct Caches {
         static let imageCache = ImageCache()
     }
+    
+    // Pasted in to remove https:// from url for directory storage.
+    // Get a subset of the data to conform to Udacity requirements, if udacity Bool is true.
+//    if udacity {
+//    print("udacity was true, so getting subset of data.")
+//    /* subset response data! */
+//    newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
+//    }
     
     
     //    func getTotalPhotos(pin: Pin, arguments: [String: AnyObject], completionHandler: (success: Bool, errorString: String?) -> Void) {

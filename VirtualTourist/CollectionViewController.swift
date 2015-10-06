@@ -52,7 +52,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     // For canceling session data task quickly
     var searchTask: NSURLSessionDataTask?
     
-    var sharedContext: NSManagedObjectContext = CoreDataStackManager.sharedInstance().managedObjectContext!
+    var sharedContext: NSManagedObjectContext = CoreDataStackManager.sharedInstance().managedObjectContext
     
     // Computed property for zooming
     var region: MKCoordinateRegion {
