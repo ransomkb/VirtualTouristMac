@@ -10,6 +10,7 @@ import Foundation
 
 extension PinPhotos {
     struct API {
+        static let BASE = "https://"
         static let BASE_URL = "https://api.flickr.com/services/rest/"
         static let METHOD_NAME = "flickr.photos.search"
         static let API_KEY = "35c8d5a00d63b2ba2caf97759109cabf"
@@ -17,8 +18,7 @@ extension PinPhotos {
         static let SAFE_SEARCH = "1"
         static let DATA_FORMAT = "json"
         static let NO_JSON_CALLBACK = "1"
-        static let PerPage = "6"
-        
+        static let PerPage = "3"
     }
     
     struct BBox {

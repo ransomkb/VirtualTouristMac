@@ -306,10 +306,10 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     func configureCell(cell: TaskCancellingCollectionViewCell, photo: Photo) {
         print("Configuring a cell")
         
-        dispatch_async(dispatch_get_main_queue(), {
-            cell.backgroundColor = UIColor.blackColor()
-            cell.activityIndicator.startAnimating()
-        })
+//        dispatch_async(dispatch_get_main_queue(), {
+//            cell.backgroundColor = UIColor.blackColor()
+//            cell.activityIndicator.startAnimating()
+//        })
         
         var coordinateImage = UIImage(named: "placeholder")
         
@@ -319,29 +319,43 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         if photo.imagePath == nil || photo.imagePath == "" {
             print("No Image")
             coordinateImage = UIImage(named: "placeholder")
+            return
         } else if photo.photoImage != nil {
             print("PhotoImage is not nil")
             coordinateImage = photo.photoImage
+            return
         } else {
             print("Photo has an image name, but it has not been downloaded yet.")
+            cell.activityIndicator.startAnimating()
+            PinPhotos.sharedInstance().taskForImage(photo, completionHandler: { (success, errorString) -> Void in
+                if success {
+                    coordinateImage = photo.photoImage
+                    cell.activityIndicator.stopAnimating()
+                } else {
+                    // Set up a photo image for showing no photo.
+                    print("No Image: \(errorString)")
+                    coordinateImage = UIImage(named: "placeholder")
+                    cell.activityIndicator.stopAnimating()
+                }
+            })
             
-            print(photo.imagePath)
-            let imageURL = NSURL(string: photo.imagePath!)
-            
-            if let imageData = NSData(contentsOfURL: imageURL!) {
-                print("Got imageDate from imageURL")
-                photo.photoImage = UIImage(data: imageData)
-                // IMPORTANT: uncomment this after placeholders are working
-                //coordinateImage = photo.photoImage
-            }
+//            print(photo.imagePath)
+//            let imageURL = NSURL(string: photo.imagePath!)
+//            
+//            if let imageData = NSData(contentsOfURL: imageURL!) {
+//                print("Got imageDate from imageURL")
+//                photo.photoImage = UIImage(data: imageData)
+//                // IMPORTANT: uncomment this after placeholders are working
+//                //coordinateImage = photo.photoImage
+//            }
         }
         
-        dispatch_async(dispatch_get_main_queue(), {
-            
-            cell.imageView!.image = coordinateImage
-            
-            cell.activityIndicator.stopAnimating()
-        })
+        cell.imageView!.image = coordinateImage
+        return
+//        dispatch_async(dispatch_get_main_queue(), {
+//            cell.imageView!.image = coordinateImage
+//            return
+//        })
     }
     
     // MARK - UICollectionView
@@ -368,6 +382,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         // Create a cell from the identifier.
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! TaskCancellingCollectionViewCell
+        
+        cell.backgroundColor = UIColor.blackColor()
+        //cell.activityIndicator.startAnimating()
         
         print("CELL for item at index path: \(indexPath)")
         
