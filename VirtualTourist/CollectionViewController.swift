@@ -388,7 +388,51 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         print("CELL for item at index path: \(indexPath)")
         
-        self.configureCell(cell, photo: photo)
+        //self.configureCell(cell, photo: photo)
+        //var coordinateImage = UIImage(named: "placeholder")
+        
+        cell.imageView!.image = UIImage(named: "placeholder")
+        
+        // Set the Photo Image
+        if photo.imagePath == nil || photo.imagePath == "" {
+            print("No Image")
+            //coordinateImage = UIImage(named: "placeholder")
+            cell.imageView!.image = UIImage(named: "placeholder")
+            return cell
+        } else if photo.photoImage != nil {
+            print("PhotoImage is not nil")
+            //coordinateImage = photo.photoImage
+            cell.imageView!.image = photo.photoImage
+            return cell
+        } else {
+            print("Photo has an image name, but it has not been downloaded yet.")
+            cell.activityIndicator.startAnimating()
+            PinPhotos.sharedInstance().taskForImage(photo, completionHandler: { (success, errorString) -> Void in
+                if success {
+                    //coordinateImage = photo.photoImage
+                    cell.imageView!.image = photo.photoImage
+                    cell.activityIndicator.stopAnimating()
+                } else {
+                    // Set up a photo image for showing no photo.
+                    print("No Image: \(errorString)")
+                    //coordinateImage = UIImage(named: "placeholder")
+                    cell.imageView!.image = UIImage(named: "placeholder")
+                    cell.activityIndicator.stopAnimating()
+                }
+            })
+            
+            //            print(photo.imagePath)
+            //            let imageURL = NSURL(string: photo.imagePath!)
+            //
+            //            if let imageData = NSData(contentsOfURL: imageURL!) {
+            //                print("Got imageDate from imageURL")
+            //                photo.photoImage = UIImage(data: imageData)
+            //                // IMPORTANT: uncomment this after placeholders are working
+            //                //coordinateImage = photo.photoImage
+            //            }
+        }
+        
+        //cell.imageView!.image = coordinateImage
         
         return cell
     }

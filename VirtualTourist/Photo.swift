@@ -44,7 +44,7 @@ class Photo: NSManagedObject {
         title = dictionary[Keys.Title] as! String
         imagePath = dictionary[Keys.ImagePath] as? String
         if let wholeString = imagePath {
-            print("udacity was true, so getting subset of data.")
+            print("Removing https:// to create a subset of data.")
             /* subset response data! */
             let subString = wholeString.substringFromIndex((imagePath?.startIndex.advancedBy(8))!)
             imagePath = subString // Maybe 8 is better if starts from
