@@ -77,8 +77,8 @@ class Photo: NSManagedObject {
         // Set properties with dictionary data.
         id = dictionary[Keys.PhotoID] as! String
         title = dictionary[Keys.Title] as! String
-        //imagePath = dictionary[Keys.ImagePath] as? String
-        if let wholeString = dictionary[Keys.ImagePath] as? String {
+        imagePath = dictionary[Keys.ImagePath] as? String
+        if let wholeString = imagePath {
             print("Removing https:// to create a subset of data.")
             /* subset response data! */
             let subString = wholeString.substringFromIndex((imagePath?.startIndex.advancedBy(8))!)
@@ -91,8 +91,8 @@ class Photo: NSManagedObject {
         // Set properties with dictionary data.
         id = dictionary[Keys.PhotoID] as! String
         title = dictionary[Keys.Title] as! String
-        //imagePath = dictionary[Keys.ImagePath] as? String
-        if let wholeString = dictionary[Keys.ImagePath] as? String {
+        imagePath = dictionary[Keys.ImagePath] as? String
+        if let wholeString = imagePath {
             print("Removing https:// to create a subset of data.")
             /* subset response data! */
             let subString = wholeString.substringFromIndex((imagePath?.startIndex.advancedBy(8))!)
