@@ -20,6 +20,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     var alertMessage: String?
     
     var totalPages = 0
+    var totalPhotos = 0
     var pageLimit = 0
     var randomPages = [Int]()
     
@@ -122,6 +123,12 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             // Make sure there is a photos key.
             if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
                 print("Got some photos")
+                
+                if let totalPhotos = photosDictionary["total"] as? String {
+                    
+                    // Convert total string to integer.
+                    self.totalPhotos = (totalPhotos as NSString).integerValue
+                }
                 
                 // Make sure there is a pages key pointing to total number of pages.
                 if let totalPages = photosDictionary["pages"] as? Int {
@@ -431,15 +438,16 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
 //        }
 //    }
     
+    // Return number of cells to use for a collection.
+    func determineTotalCells() -> Int {
+
+        let totalCells = totalPhotos < 21 ? totalPhotos : 21
+        return totalCells
+    }
+    
     // Return an integer generated randomly from the total number of pages.
     func randomPageGenerator() -> Int {
         
-//        for (var x = 0; x < pageLimit; ++x) {
-//            // Try getting one page from the random set
-//            let randomPage = Int(arc4random_uniform(UInt32(totalPages))) + 1
-//            self.randomPages.append(randomPage)
-//        }
-
         return Int(arc4random_uniform(UInt32(self.totalPages))) + 1
     }
     
@@ -462,6 +470,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
 //        CoreDataStackManager.sharedInstance().saveContext()
 //    }
     
+    
     // Delete all the photos related to a pin
     func deletePhotosForPin(pin: Pin) {
         
@@ -473,9 +482,9 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             p.photoImage = nil
             sharedContext.deleteObject(p)
         }
-        
+        // IMPOTANT: may need to uncomment this. just checking
         // Save the context.
-        CoreDataStackManager.sharedInstance().saveContext()
+        // CoreDataStackManager.sharedInstance().saveContext()
     }
     
     // MARK: - Shared Instance

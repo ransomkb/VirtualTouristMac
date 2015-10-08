@@ -31,6 +31,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     //var delegate: CollectionViewControllerDelegate?
     
+    private let placeHolder = "placeholder"
     private let reuseIdentifier = "PhotoCell"
     private let sectionInsets = UIEdgeInsets(top: 2.0, left: 2.0, bottom: 5.0, right: 2.0)
     
@@ -135,6 +136,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         // Delete all photos related to this Pin.
         PinPhotos.sharedInstance().deletePhotosForPin(self.pin!)
         
+        // IMPOTANT: may need to uncomment this. just checking
         // Save the changes.
         CoreDataStackManager.sharedInstance().saveContext()
         
@@ -287,6 +289,43 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
+    func insertNewObject(sender: AnyObject) {
+        print("Inserting new Photo object")
+        let context = self.fetchedResultsController.managedObjectContext
+        let entity = self.fetchedResultsController.fetchRequest.entity!
+        let newManagedObject = NSEntityDescription.insertNewObjectForEntityForName(entity.name!, inManagedObjectContext: context)
+        
+        let title = "No Name"
+        let imagePath = "placeholder"
+        
+        
+        // If appropriate, configure the new managed object.
+        // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
+        // IMPORTANT: this may be wrong. Check
+        newManagedObject.setValue(self.pin, forKey: "pin")
+        newManagedObject.setValue(title, forKey: "title")
+        newManagedObject.setValue(imagePath, forKey: "imagePath")
+        
+        // Save the context.
+        var error: NSError? = nil
+        do {
+            try context.save()
+        } catch let error1 as NSError {
+            error = error1
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            print("Unresolved error \(error), \(error!.userInfo)")
+            abort()
+        }
+    }
+
+    func preparePlaceHolders() {
+        let totalCells = PinPhotos.sharedInstance().determineTotalCells()
+        for _ in 1...totalCells {
+            insertNewObject(self)
+        }
+    }
+    
     
     // Layout the collection view
     
@@ -311,60 +350,60 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     // MARK - Configure Cell
     // maybe do not need
-    func configureCell(cell: TaskCancellingCollectionViewCell, photo: Photo) {
-        print("Configuring a cell")
-        
-//        dispatch_async(dispatch_get_main_queue(), {
-//            cell.backgroundColor = UIColor.blackColor()
-//            cell.activityIndicator.startAnimating()
-//        })
-        
-        var coordinateImage = UIImage(named: "placeholder")
-        
-        cell.imageView!.image = nil
-        
-        // Set the Photo Image
-        if photo.imagePath == nil || photo.imagePath == "" {
-            print("No Image")
-            coordinateImage = UIImage(named: "placeholder")
-            return
-        } else if photo.photoImage != nil {
-            print("PhotoImage is not nil")
-            coordinateImage = photo.photoImage
-            return
-        } else {
-            print("Photo has an image name, but it has not been downloaded yet.")
-            cell.activityIndicator.startAnimating()
-            PinPhotos.sharedInstance().taskForImage(photo, completionHandler: { (success, errorString) -> Void in
-                if success {
-                    coordinateImage = photo.photoImage
-                    cell.activityIndicator.stopAnimating()
-                } else {
-                    // Set up a photo image for showing no photo.
-                    print("No Image: \(errorString)")
-                    coordinateImage = UIImage(named: "placeholder")
-                    cell.activityIndicator.stopAnimating()
-                }
-            })
-            
-//            print(photo.imagePath)
-//            let imageURL = NSURL(string: photo.imagePath!)
-//            
-//            if let imageData = NSData(contentsOfURL: imageURL!) {
-//                print("Got imageDate from imageURL")
-//                photo.photoImage = UIImage(data: imageData)
-//                // IMPORTANT: uncomment this after placeholders are working
-//                //coordinateImage = photo.photoImage
-//            }
-        }
-        
-        cell.imageView!.image = coordinateImage
-        return
-//        dispatch_async(dispatch_get_main_queue(), {
-//            cell.imageView!.image = coordinateImage
+//    func configureCell(cell: TaskCancellingCollectionViewCell, photo: Photo) {
+//        print("Configuring a cell")
+//        
+////        dispatch_async(dispatch_get_main_queue(), {
+////            cell.backgroundColor = UIColor.blackColor()
+////            cell.activityIndicator.startAnimating()
+////        })
+//        
+//        var coordinateImage = UIImage(named: "placeholder")
+//        
+//        cell.imageView!.image = nil
+//        
+//        // Set the Photo Image
+//        if photo.imagePath == nil || photo.imagePath == "" {
+//            print("No Image")
+//            coordinateImage = UIImage(named: "placeholder")
 //            return
-//        })
-    }
+//        } else if photo.photoImage != nil {
+//            print("PhotoImage is not nil")
+//            coordinateImage = photo.photoImage
+//            return
+//        } else {
+//            print("Photo has an image name, but it has not been downloaded yet.")
+//            cell.activityIndicator.startAnimating()
+//            PinPhotos.sharedInstance().taskForImage(photo, completionHandler: { (success, errorString) -> Void in
+//                if success {
+//                    coordinateImage = photo.photoImage
+//                    cell.activityIndicator.stopAnimating()
+//                } else {
+//                    // Set up a photo image for showing no photo.
+//                    print("No Image: \(errorString)")
+//                    coordinateImage = UIImage(named: "placeholder")
+//                    cell.activityIndicator.stopAnimating()
+//                }
+//            })
+//            
+////            print(photo.imagePath)
+////            let imageURL = NSURL(string: photo.imagePath!)
+////            
+////            if let imageData = NSData(contentsOfURL: imageURL!) {
+////                print("Got imageDate from imageURL")
+////                photo.photoImage = UIImage(data: imageData)
+////                // IMPORTANT: uncomment this after placeholders are working
+////                //coordinateImage = photo.photoImage
+////            }
+//        }
+//        
+//        cell.imageView!.image = coordinateImage
+//        return
+////        dispatch_async(dispatch_get_main_queue(), {
+////            cell.imageView!.image = coordinateImage
+////            return
+////        })
+//    }
     
     // MARK - UICollectionView
     
@@ -385,10 +424,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        // Create a photo from the fetched results controller object at the index path.
-        let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-        
-        // Create a cell from the identifier.
+                // Create a cell from the identifier.
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! TaskCancellingCollectionViewCell
         
         cell.backgroundColor = UIColor.blackColor()
@@ -401,6 +437,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         
         cell.imageView!.image = UIImage(named: "placeholder")
         
+        // Create a photo from the fetched results controller object at the index path.
+        if (self.fetchedResultsController.fetchedObjects?.count != 0) {
+        
+            let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+
         // Set the Photo Image
         if photo.imagePath == nil || photo.imagePath == "" {
             print("No Image")
@@ -415,6 +456,13 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         } else {
             print("Photo has an image name, but it has not been downloaded yet.")
             cell.activityIndicator.startAnimating()
+            
+            if (photo.imagePath == "placeholder") {
+                photo.photoImage = UIImage(named: "placeholder")
+                cell.imageView!.image = photo.photoImage
+                return cell
+            } else {
+            
             PinPhotos.sharedInstance().taskForImage(photo, completionHandler: { (success, errorString) -> Void in
                 if success {
                     //coordinateImage = photo.photoImage
@@ -428,6 +476,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                     cell.activityIndicator.stopAnimating()
                 }
             })
+            }
             
             //            print(photo.imagePath)
             //            let imageURL = NSURL(string: photo.imagePath!)
@@ -441,7 +490,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         }
         
         //cell.imageView!.image = coordinateImage
+        }
         
+        print("MARK: Ready to return the Cell.")
         return cell
     }
     
@@ -517,8 +568,8 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         print("HEY!!! in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
         
-        
-        CoreDataStackManager.sharedInstance().saveContext()
+        // IMPOTANT: may need to uncomment this. just checking
+        //CoreDataStackManager.sharedInstance().saveContext()
         
         self.collectionView.performBatchUpdates({() -> Void in
             

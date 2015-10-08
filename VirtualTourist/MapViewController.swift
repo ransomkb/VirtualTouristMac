@@ -231,8 +231,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                     
                     // Create a dictionary of keys and values necessary for creating a Pin object.
                     let dictionary: [String : AnyObject] = [
-                        Pin.Keys.Title : "\(place.administrativeArea)",
-                        Pin.Keys.Address : "\(placeText)",
+                        Pin.Keys.Title : adminArea,
+                        Pin.Keys.Address : placeText,
                         Pin.Keys.Latitude : fingerLocation.latitude,
                         Pin.Keys.Longitude : fingerLocation.longitude
                     ]
