@@ -67,7 +67,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     var filePath : String {
         let manager = NSFileManager.defaultManager()
         let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first //as! NSURL
-        return url!.URLByAppendingPathComponent("zoomDictionary").path!
+        return url!.URLByAppendingPathComponent("Photos").path!
     }
     
     // Lazily computed property pointing to the Photo entity objects, sorted by title, predicated on the pin.
