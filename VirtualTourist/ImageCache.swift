@@ -45,6 +45,7 @@ class ImageCache {
     
     // MARK: - Saving images
     
+    // Only stores to Cache, not to file.
     func storeImage(image: UIImage?, withIdentifier identifier: String) {
         
         print("Storing image")

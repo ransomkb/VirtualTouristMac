@@ -18,7 +18,7 @@ extension PinPhotos {
         static let SAFE_SEARCH = "1"
         static let DATA_FORMAT = "json"
         static let NO_JSON_CALLBACK = "1"
-        static let PerPage = "3"
+        static let PerPage = "21"
     }
     
     struct BBox {

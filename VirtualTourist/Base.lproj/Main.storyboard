@@ -64,6 +64,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Images for this Pin" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UaU-FM-ghz">
+                                <rect key="frame" x="216" y="290" width="168" height="21"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G19-Se-rUS">
                                 <rect key="frame" x="0.0" y="28" width="600" height="44"/>
                                 <animations/>
@@ -81,7 +88,7 @@
                                 <rect key="frame" x="0.0" y="72" width="600" height="68"/>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="68" id="9KB-c0-WWX"/>
+                                    <constraint firstAttribute="height" constant="68" id="VVP-G2-bVC"/>
                                 </constraints>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Zaa-Tf-gS7">
@@ -148,18 +155,20 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="9a5-ZG-9NO"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="top" secondItem="G19-Se-rUS" secondAttribute="bottom" id="Dq3-dK-hpW"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="top" secondItem="r1d-v5-owy" secondAttribute="bottom" constant="2" id="F8i-7q-0Eo"/>
-                            <constraint firstAttribute="trailing" secondItem="Zaa-Tf-gS7" secondAttribute="trailing" id="JbQ-UL-TzD"/>
-                            <constraint firstItem="q8P-sQ-6LM" firstAttribute="top" secondItem="gVb-Nw-n0e" secondAttribute="bottom" constant="9" id="LyL-Eb-Q9d"/>
-                            <constraint firstItem="G19-Se-rUS" firstAttribute="top" secondItem="Fni-A4-5Ts" secondAttribute="bottom" constant="8" id="Mwp-fy-8Nx"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="centerX" secondItem="gVb-Nw-n0e" secondAttribute="centerX" id="Nds-cy-9Kh"/>
-                            <constraint firstItem="gVb-Nw-n0e" firstAttribute="top" secondItem="Zaa-Tf-gS7" secondAttribute="bottom" constant="8" symbolic="YES" id="PL0-Xd-20c"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="trailing" secondItem="Zaa-Tf-gS7" secondAttribute="trailing" id="dbu-Ay-z2V"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="r1d-v5-owy" secondAttribute="leading" id="ghc-9X-mDG"/>
-                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="leading" secondItem="CVx-8D-ZxA" secondAttribute="leading" id="vo8-mC-qnM"/>
-                            <constraint firstItem="r1d-v5-owy" firstAttribute="leading" secondItem="G19-Se-rUS" secondAttribute="leading" id="zbt-bE-Jq2"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="top" secondItem="r1d-v5-owy" secondAttribute="bottom" constant="2" id="5z3-Ap-11I"/>
+                            <constraint firstItem="q8P-sQ-6LM" firstAttribute="top" secondItem="gVb-Nw-n0e" secondAttribute="bottom" constant="9" id="7kV-un-2rN"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="top" secondItem="Fni-A4-5Ts" secondAttribute="bottom" constant="8" id="846-MG-B0B"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="top" secondItem="G19-Se-rUS" secondAttribute="bottom" id="AnO-mG-l7h"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="EaS-Pv-BNg"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="leading" secondItem="CVx-8D-ZxA" secondAttribute="leading" id="Hlw-qG-ZK8"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="centerX" secondItem="UaU-FM-ghz" secondAttribute="centerX" id="ULM-YH-S7V"/>
+                            <constraint firstItem="UaU-FM-ghz" firstAttribute="centerY" secondItem="CVx-8D-ZxA" secondAttribute="centerY" id="XZm-DW-2ar"/>
+                            <constraint firstItem="r1d-v5-owy" firstAttribute="leading" secondItem="Zaa-Tf-gS7" secondAttribute="leading" id="dN2-8D-oed"/>
+                            <constraint firstItem="UaU-FM-ghz" firstAttribute="centerX" secondItem="CVx-8D-ZxA" secondAttribute="centerX" id="ieg-u7-6NC"/>
+                            <constraint firstItem="gVb-Nw-n0e" firstAttribute="top" secondItem="Zaa-Tf-gS7" secondAttribute="bottom" constant="8" symbolic="YES" id="kjb-gc-8TB"/>
+                            <constraint firstItem="gVb-Nw-n0e" firstAttribute="centerX" secondItem="UaU-FM-ghz" secondAttribute="centerX" id="pVX-4l-Y9C"/>
+                            <constraint firstItem="G19-Se-rUS" firstAttribute="leading" secondItem="r1d-v5-owy" secondAttribute="leading" id="y8h-cz-BdG"/>
+                            <constraint firstItem="Zaa-Tf-gS7" firstAttribute="trailing" secondItem="r1d-v5-owy" secondAttribute="trailing" id="y9x-Wx-NnY"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -169,6 +178,7 @@
                         <outlet property="mapView" destination="r1d-v5-owy" id="e3m-mG-48H"/>
                         <outlet property="navBar" destination="G19-Se-rUS" id="yV0-uG-7pD"/>
                         <outlet property="newCollectionButton" destination="gVb-Nw-n0e" id="gfJ-gL-MHc"/>
+                        <outlet property="noImagesLabel" destination="UaU-FM-ghz" id="XPA-qB-BwE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="E4R-k1-vjI" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -19,6 +19,8 @@ import CoreData
 // Controls a collection view of photos, either stored locally or on Flickr.
 class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
+    @IBOutlet weak var noImagesLabel: UILabel!
+    
     @IBOutlet weak var navBar: UINavigationBar!
     
     @IBOutlet weak var mapView: MKMapView!
@@ -136,14 +138,15 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         // Save the changes.
         CoreDataStackManager.sharedInstance().saveContext()
         
-        // Fetch all pages of photos on Flickr at the location of this Pin in order to get a page count.
         // Fetch all photos for a randomly chosen page.
-        fetchTotalPages()
+        fetchPhotos()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Collection View did load.")
+        
+        noImagesLabel.hidden = true
         
         // Ensure there is a pin.
         if let pin = pin {
@@ -180,6 +183,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         mapView.delegate = self
         
         print("View  did load. Photos in fetched objects: \(fetchedResultsController.fetchedObjects!.count)")
+        
+        // Fetch all pages of photos on Flickr at the location of this Pin in order to get a page count.
+        fetchTotalPages()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -199,9 +205,10 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             newCollectionButton.hidden = true
             print("pin.photos is empty")
             
-            // Fetch all pages of photos on Flickr at the location of this Pin in order to get a page count.
             // Fetch all photos for a randomly chosen page.
-            fetchTotalPages()
+            fetchPhotos()
+        } else {
+            newCollectionButton.hidden = false
         }
         
         print("View will appear. Photos in fetched objects: \(fetchedResultsController.fetchedObjects!.count)")
@@ -243,8 +250,9 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                 print("Did Set Total pages: \(PinPhotos.sharedInstance().totalPages)")
                 
                 // Get all the photos on a randomly chosen page.
-                self.fetchPhotos()
+                //self.fetchPhotos()
             } else {
+                self.noImagesLabel.hidden = false
                 // Report failure.
                 // Use UIAlertController to inform user of issue.
                 self.alertMessage = errorString
@@ -384,7 +392,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! TaskCancellingCollectionViewCell
         
         cell.backgroundColor = UIColor.blackColor()
-        //cell.activityIndicator.startAnimating()
+        cell.activityIndicator.stopAnimating()
         
         print("CELL for item at index path: \(indexPath)")
         
