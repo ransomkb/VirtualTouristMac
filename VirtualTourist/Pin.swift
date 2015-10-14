@@ -99,19 +99,11 @@ class Pin: NSManagedObject, MKAnnotation {
             }
 
             // Make sure there is at least one place in the placemarkes array.
-            //if placemarks!.count > 0 {
             if let place = placemarks!.first {
-                // Get the first place.
-                //let place = placemarks[0] //as! CLPlacemark
                 
                 // Set the variables of self.
-                //if let area = place.administrativeArea {
-                    self.title = "\(place.administrativeArea)"
-                    self.address = "\(place.locality), \(place.administrativeArea)  \(place.country)"
-                //} else {
-//                    self.title! = "Unknown"
-//                    self.address = ""
-                //}
+                self.title = "\(place.administrativeArea)"
+                self.address = "\(place.locality), \(place.administrativeArea)  \(place.country)"
                 
                 print("\(self.address)")
             }

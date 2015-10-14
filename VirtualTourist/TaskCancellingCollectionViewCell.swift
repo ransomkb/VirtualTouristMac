@@ -34,10 +34,4 @@ class TaskCancellingCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         self.selected = false
     }
-    
-//    override var selected : Bool {
-//        didSet {
-//            self.backgroundColor = selected ? UIColor.whiteColor() : UIColor.blackColor()
-//        }
-//    }
 }

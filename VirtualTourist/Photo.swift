@@ -83,23 +83,7 @@ class Photo: NSManagedObject {
             print("Removing https:// to create a subset of data.")
             /* subset response data! */
             let subString = wholeString.substringFromIndex((imagePath?.startIndex.advancedBy(8))!)
-            imagePath = subString // Maybe 8 is better if starts from
-            //subdataWithRange(NSMakeRange(5, imagePath.length - 5))
+            imagePath = subString
         }
     }
-    
-    func updateDetails(dictionary: [String : AnyObject]) {
-        // Set properties with dictionary data.
-        id = dictionary[Keys.PhotoID] as! String
-        title = dictionary[Keys.Title] as! String
-        imagePath = dictionary[Keys.ImagePath] as? String
-        if let wholeString = imagePath {
-            print("Removing https:// to create a subset of data.")
-            /* subset response data! */
-            let subString = wholeString.substringFromIndex((imagePath?.startIndex.advancedBy(8))!)
-            imagePath = subString // Maybe 8 is better if starts from
-            //subdataWithRange(NSMakeRange(5, imagePath.length - 5))
-        }
-    }
-    
 }

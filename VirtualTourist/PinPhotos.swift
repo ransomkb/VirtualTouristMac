@@ -24,10 +24,6 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     var pageLimit = 0
     var randomPages = [Int]()
     
-    //var deletePins = [Pin]()
-    
-    //var config = Config.unarchivedInstance() ?? Config()
-    
     override init() {
         session = NSURLSession.sharedSession()
         super.init()
@@ -180,108 +176,78 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             "per_page": PinPhotos.API.PerPage
         ]
         
-        //for (var x = 0; x < pageLimit; ++x) {
-            
         // Return an integer generated randomly from the total number of pages.
         let page = self.randomPageGenerator()
-            
-            print("Getting a photo for page: \(page)")
+        
+        print("Getting a photo for page: \(page)")
         
         // Create a new argument dictionary with additional key called page to limit number of photos returned.
-            var withPageDictionary: [String:AnyObject] = methodArguments
-            withPageDictionary["page"] = "\(page)"
-            
+        var withPageDictionary: [String:AnyObject] = methodArguments
+        withPageDictionary["page"] = "\(page)"
+        
         // Assign a search task using request arguments.
         // Use a completion handler to return the parsed json results.
         self.searchTask = PinPhotos.sharedInstance().taskForResource(withPageDictionary, completionHandler: { (parsedResult, error) -> Void in
             
             // Check for error.
-                if let error = error {
-                    
-                    // Report error with localized string.
-                    let eString = "Error searching for photos: \(error.localizedDescription)"
-                    print(eString)
-                    
-                    // Report failure and error details.
-                    completionHandler(success: false, errorString: eString)
-                    return
-                }
+            if let error = error {
                 
+                // Report error with localized string.
+                let eString = "Error searching for photos: \(error.localizedDescription)"
+                print(eString)
+                
+                // Report failure and error details.
+                completionHandler(success: false, errorString: eString)
+                return
+            }
+            
             // Make sure there is a photos key.
             if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
-                    
-                    var totalPhotosValue = 0
+                
+                var totalPhotosValue = 0
                 
                 // Make sure there is a total key.
-                    if let totalPhotos = photosDictionary["total"] as? String {
-                        
-                        // Convert total string to integer.
-                        totalPhotosValue = (totalPhotos as NSString).integerValue
-                    }
+                if let totalPhotos = photosDictionary["total"] as? String {
                     
-//                    var perPage = 0
-//                    if let per = photosDictionary[PinPhotos.Keys.PerPage] as? String {
-//                        println("Number of photos per page: \(per)")
-//                        perPage = (per as NSString).integerValue
-//                    }
+                    // Convert total string to integer.
+                    totalPhotosValue = (totalPhotos as NSString).integerValue
+                }
                 
                 // Make sure at least one photo.
-                    if totalPhotosValue > 0 {
+                if totalPhotosValue > 0 {
+                    
+                    print("Total photos: \(totalPhotosValue)")
+                    
+                    // Make sure there is a photo key to retrieve the array of dictionaries of photo details from the parsed JSON.
+                    if let photosArray = photosDictionary["photo"] as? [[String:AnyObject]] {
                         
-                        print("Total photos: \(totalPhotosValue)")
+                        print("Creating array of Photo entities from photo dictionary: \(photosArray)")
                         
-                        // Make sure there is a photo key to retrieve the array of dictionaries of photo details from the parsed JSON.
-                        if let photosArray = photosDictionary["photo"] as? [[String:AnyObject]] {
+                        // Create a Photo class and entity value for each photo in the array using its dictionary.
+                        _ = photosArray.map() {(dictionary: [String : AnyObject]) -> Photo in
+                            let photo = Photo(dictionary: dictionary, context: self.sharedContext)
                             
-                            print("Creating array of Photo entities from photo dictionary: \(photosArray)")
-                            
-                            // IMPORTANT: make this a temporary context, then check shared context for same id.
-                            // Create a Photo class and entity value for each photo in the array using its dictionary.
-                            _ = photosArray.map() {(dictionary: [String : AnyObject]) -> Photo in
-                                let photo = Photo(dictionary: dictionary, context: self.sharedContext)
-                                
-                                // Set the pin variable in photo to that passed through this function.
-                                photo.pin = pin
-                                print("Photo image path: \(photo.imagePath)")
-                                return photo
-                            }
-                            
-                            // IMPORTANT: maybe wish to save here. Check if photo with same id already exists.
-                            //CoreDataStackManager.sharedInstance().saveContext()
-                            
-                            // Report success in getting photos from flickr and creating photo instances for Core Data.
-                            completionHandler(success: true, errorString: nil)
-                        } else {
-                            // Report failure and error details.
-                            completionHandler(success: false, errorString: "Error: no key called 'photo'")
+                            // Set the pin variable in photo to that passed through this function.
+                            photo.pin = pin
+                            print("Photo image path: \(photo.imagePath)")
+                            return photo
                         }
+                        
+                        // Report success in getting photos from flickr and creating photo instances for Core Data.
+                        completionHandler(success: true, errorString: nil)
                     } else {
                         // Report failure and error details.
-                        completionHandler(success: false, errorString: "Error: totalPhtotos was 0 or less.")
+                        completionHandler(success: false, errorString: "Error: no key called 'photo'")
                     }
                 } else {
                     // Report failure and error details.
-                    completionHandler(success: false, errorString: "Error: no key called 'photos'")
+                    completionHandler(success: false, errorString: "Error: totalPhtotos was 0 or less.")
                 }
-            })
-
-        //}
-        
-        //CoreDataStackManager.sharedInstance().saveContext()
-        
-        
-        
-//        self.getPhotoForAlbum(pin, page: page, arguments: methodArguments, completionHandler: { (success, errorString) -> Void in
-//            if success {
-//                println("Got a photo for a cell")
-//                
-//                completionHandler(success: true, errorString: nil)
-//            } else {
-//                println(errorString)
-//                completionHandler(success: false, errorString: errorString)
-//            }
-//        })
-        
+            } else {
+                // Report failure and error details.
+                completionHandler(success: false, errorString: "Error: no key called 'photos'")
+            }
+        })
     }
     
     // Create a session data task for requesting data from Flickr with a RESTful request using a dictionary of parameters.
@@ -314,7 +280,6 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             } else {
                 print("taskForResource's completionHandler is invoked.")
                 
-                
                 // Parse JSON data using a completion handler to return the results.
                 PinPhotos.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
             }
@@ -343,8 +308,6 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             if let imageData = NSData(contentsOfURL: imageURL!) {
                 print("Got imageData from imageURL")
                 photo.photoImage = UIImage(data: imageData)
-                // IMPORTANT: uncomment this after placeholders are working
-                //coordinateImage = photo.photoImage
                 
                 // Report success.
                 completionHandler(success: true, errorString: nil)
@@ -436,11 +399,8 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
     
-//    func cleanupPins() {
-//        deletePins.map() {
-//            self.sharedContext.deleteObject($0 as Pin)
-//        }
-//    }
+    
+    // Mark: - Miscellaneous
     
     // Return number of cells to use for a collection.
     func determineTotalCells() -> Int {
@@ -455,30 +415,8 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         return Int(arc4random_uniform(UInt32(self.totalPages))) + 1
     }
     
-//    func deletePin(pin: Pin) {
-//        println("Deleting a pin")
-//        deletePhotosForPin(pin)
-//        //self.deletePins.append(pin)
-//        sharedContext.deleteObject(pin)
-//        CoreDataStackManager.sharedInstance().saveContext()
-//    }
-//    
-//    func deleteAllPins() {
-//        println("Deleting pins")
-//        let fetched = pinFetchedResultsController.fetchedObjects
-//        
-//        fetched?.map() {
-//            //self.deletePins.append($0 as! Pin)
-//            self.deletePhotosForPin($0 as! Pin)
-//        }
-//        CoreDataStackManager.sharedInstance().saveContext()
-//    }
-    
-    
     // Delete all the photos related to a pin
     func deletePhotosForPin(pin: Pin) {
-        
-        //let photos = pin.photos as [Photo]
         
         // Delete all the photos from the Pin.
         for p in pin.photos as [Photo] {
@@ -486,9 +424,6 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
             p.photoImage = nil
             sharedContext.deleteObject(p)
         }
-        // IMPOTANT: may need to uncomment this. just checking
-        // Save the context.
-        // CoreDataStackManager.sharedInstance().saveContext()
     }
     
     // MARK: - Shared Instance
@@ -509,103 +444,4 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     struct Caches {
         static let imageCache = ImageCache()
     }
-    
-    // Pasted in to remove https:// from url for directory storage.
-    // Get a subset of the data to conform to Udacity requirements, if udacity Bool is true.
-//    if udacity {
-//    print("udacity was true, so getting subset of data.")
-//    /* subset response data! */
-//    newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
-//    }
-    
-    
-    //    func getTotalPhotos(pin: Pin, arguments: [String: AnyObject], completionHandler: (success: Bool, errorString: String?) -> Void) {
-    //
-    //        println("Getting a page number.")
-    //        self.searchTask = PinPhotos.sharedInstance().taskForResource(arguments, completionHandler: { (parsedResult, error) -> Void in
-    //
-    //            // Handle the error case
-    //            if let error = error {
-    //                self.alertMessage = "Error searching for photos: \(error.localizedDescription)"
-    //                println(self.alertMessage)
-    //                return
-    //            }
-    //
-    //            if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
-    //                println("Got some photos")
-    //                if let totalPages = photosDictionary["pages"] as? Int {
-    //                    println("Total pages: \(totalPages)")
-    //                    self.totalPages = totalPages
-    //
-    //                    // IMPORTANT: change this back to 42 before submission
-    //                    self.pageLimit = min(totalPages, 6)
-    //                    println("Page limit: \(self.pageLimit)")
-    //
-    //                    completionHandler(success: true, errorString: nil)
-    //                } else {
-    //                    let eString = "Can't find key 'pages' in \(photosDictionary)"
-    //                    println(eString)
-    //                    completionHandler(success: false, errorString: eString)
-    //                }
-    //            } else {
-    //                let eString = "Can't find key 'photos' in \(parsedResult)"
-    //                println(eString)
-    //            }
-    //        })
-    //    }
-
-
-    
-    //    func getPhotoForAlbum(pin: Pin, page: Int, arguments: [String: AnyObject], completionHandler: (success: Bool, errorString: String?) -> Void) {
-    //
-    //        println("Getting a photo for page: \(page)")
-    //        var withPageDictionary: [String:AnyObject] = arguments
-    //        withPageDictionary["page"] = "\(page)"
-    //
-    //        self.searchTask = PinPhotos.sharedInstance().taskForResource(withPageDictionary, completionHandler: { (parsedResult, error) -> Void in
-    //            // Handle the error case
-    //            if let error = error {
-    //                self.alertMessage = "Error searching for photos: \(error.localizedDescription)"
-    //                println(self.alertMessage)
-    //                return
-    //            }
-    //
-    //            if let photosDictionary = parsedResult.valueForKey("photos") as? [String:AnyObject] {
-    //
-    //                var totalPhotosValue = 0
-    //                if let totalPhotos = photosDictionary["total"] as? String {
-    //                    totalPhotosValue = (totalPhotos as NSString).integerValue
-    //                }
-    //
-    ////                var perPage = 0
-    ////                if let per = photosDictionary[PinPhotos.Keys.PerPage] as? String {
-    ////                    println("Number of photos per page: \(per)")
-    ////                    perPage = (per as NSString).integerValue
-    ////                }
-    //
-    //                if totalPhotosValue > 0 {
-    //
-    //                    println("Total photos: \(totalPhotosValue)")
-    //                    if let photosArray = photosDictionary["photo"] as? [[String:AnyObject]] {
-    //
-    //                        println("Creating array of Photo entities from photo dictionary: \(photosArray)")
-    //                        var photos = photosArray.map() {(dictionary: [String : AnyObject]) -> Photo in
-    //                            let photo = Photo(dictionary: dictionary, context: self.sharedContext)
-    //                            photo.pin = pin
-    //                            println("Photo image path: \(photo.imagePath)")
-    //                            return photo
-    //                        }
-    //
-    //                        completionHandler(success: true, errorString: nil)
-    //                    } else {
-    //                        completionHandler(success: false, errorString: "Error: no key called 'photo'")
-    //                    }
-    //                } else {
-    //                    completionHandler(success: false, errorString: "Error: totalPhtotos was 0 or less.")
-    //                }
-    //            } else {
-    //                completionHandler(success: false, errorString: "Error: no key called 'photos'")
-    //            }
-    //        })
-    //    }
 }

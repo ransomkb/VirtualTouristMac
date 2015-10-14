@@ -12,7 +12,6 @@ import MapKit
 import CoreLocation
 import CoreData
 
-// Removed this from list of delegate conformers: CollectionViewControllerDelegate
 
 // Controller of the view of the main map.
 class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetchedResultsControllerDelegate {
@@ -51,16 +50,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
     lazy var fetchedResultsController: NSFetchedResultsController = {
         
         return PinPhotos.sharedInstance().pinFetchedResultsController
-//        let fetchRequest = NSFetchRequest(entityName: "Pin")
-//        
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "longitude", ascending: true)]
-//        
-//        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-//            managedObjectContext: self.sharedContext,
-//            sectionNameKeyPath: nil,
-//            cacheName: nil)
-//        
-//        return fetchedResultsController
     }()
     
     // Useful keys for the Pin dictionary.
@@ -120,26 +109,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         // Hide the navigation bar.
         self.navigationController?.navigationBarHidden = true
 
-        //deleteAllPins()
-        //centerMapOnLocation()
-        
-//        println("Updating annotations")
-//        if let annotations = mapView.annotations {
-//            
-//            mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
-//        }
-//        
-//        CoreDataStackManager.sharedInstance().saveContext()
-//
-//        var error: NSError? = nil
-//        
-//        if !sharedContext.save(&error) {
-//            alertMessage = "Error performing initial fetch: \(error)"
-//            
-//            println(alertMessage)
-//            alertUser()
-//        }
-        
         // Update the annotations to reflect Pin changes.
         updateAnnotations()
         
@@ -167,13 +136,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         // Stop location manager from updating location as segueing.
         locationManager.stopUpdatingLocation()
         
-        //deleteAllPins()
         print("View will disappear")
-        //mapView.removeAnnotations(fetchedResultsController.fetchedObjects)
-        // Ensure the coordinates of any dragged pins are updated.
-        // IMPORTANT : maybe won't need dragging
-        //CoreDataStackManager.sharedInstance().saveContext()
-        //saveRegion()
         
         super.viewWillDisappear(animated)
     }
@@ -212,13 +175,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                 }
                 
                 // Make sure there is at least one place in the placemarks array.
-                //if placemarks!.count > 0 {
                 if let place = placemarks!.first {
                     // Stop updating the location manager while accessing this data.
                     self.locationManager.stopUpdatingLocation()
-                    
-                    // Create a placemark from the first object in the placemarks array.
-                    //let place = placemarks[0] //as! CLPlacemark
                     
                     // Create strings showing the amount of data discovered at this location.
                     let locality = place.locality ?? "Unknown"
@@ -314,45 +273,22 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         }
     }
     
-    // Maybe won't use this
-//    func centerMapOnLocation() {
-//        println("Centering Map.")
-//        
-//        mapView.setRegion(region, animated: true)
-//    }
-    
-//    func removeAnnotation(collectionViewController: CollectionViewController, withPin pin: Pin?) {
-//        if let deadPin = pin {
-//            println("Removing a pin")
-//            self.mapView.removeAnnotation(pin)
-//        }
-//    }
-    
     // IMPORTANT: this needs to be fixed.
     // Update the annotations to reflect Pin changes.
     func updateAnnotations() {
         print("Updating annotations")
         
-        // Ensure there are annotations.
-        //if let annotations = mapView.annotations as? [MKAnnotation] {
-            
-            // Update array of Pin objects to the fetched results controller array.
-            pins = fetchedResultsController.fetchedObjects as! [Pin]
-            
-            // Remove all of the existing Pin annotations.
-            mapView.removeAnnotations(pins)
-            
-            // IMPORTANT: see if we can use this.
-            //PinPhotos.sharedInstance().cleanupPins()
-            //CoreDataStackManager.sharedInstance().saveContext()
-            
-            
-            // Update array of Pin objects to the fetched results controller array.
-            pins = fetchedResultsController.fetchedObjects as! [Pin]
-            
-            // Add annotations using the data in each Pin in the array.
-            mapView.addAnnotations(pins)
-        //}
+        // Update array of Pin objects to the fetched results controller array.
+        pins = fetchedResultsController.fetchedObjects as! [Pin]
+        
+        // Remove all of the existing Pin annotations.
+        mapView.removeAnnotations(pins)
+        
+        // Update array of Pin objects to the fetched results controller array.
+        pins = fetchedResultsController.fetchedObjects as! [Pin]
+        
+        // Add annotations using the data in each Pin in the array.
+        mapView.addAnnotations(pins)
     }
     
     // Check if location manager has authority to track current location.
@@ -395,7 +331,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
             }
             
             // Ensure there is at least one placemark in the placemarks array.
-            //if placemarks!.count > 0 {
             if let place = placemarks!.first {
                 // Stop updating location as no longer necessary.
                 self.locationManager.stopUpdatingLocation()
@@ -407,16 +342,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
                 print(self.placemark.postalCode)
                 print(self.placemark.administrativeArea)
                 print(self.placemark.country)
-                
-                // Ensure there is a placemark.
-                //if let place = self.placemark {
-                    
-                    // IMPORTANT: should I do something else with this?
-                    
-                    // Create a formatted string of placemark data.
-                    let placeText = "\(place.locality), \(place.administrativeArea)  \(place.country)"
-                    print("\(placeText)")
-                //}
+        
+                // Create a formatted string of placemark data.
+                let placeText = "\(place.locality), \(place.administrativeArea)  \(place.country)"
+                print("\(placeText)")
             }
         })
     }
@@ -464,7 +393,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         })
     }
     
-    // IMPORTANT: Used for debugging directory and saving.
+    // IMPORTANT: Used for debugging directory and saving to file.
     func listFilesFromDocumentsFolder() {
         print("Trying to show directory")
         let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
