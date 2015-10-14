@@ -459,63 +459,51 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
         //var coordinateImage = UIImage(named: "placeholder")
         
         cell.imageView!.image = UIImage(named: "placeholder")
+        cell.activityIndicator.startAnimating()
         
         // Create a photo from the fetched results controller object at the index path.
         if (self.fetchedResultsController.fetchedObjects?.count != 0) {
         
             let photo = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-
-        // Set the Photo Image
-        if photo.imagePath == nil || photo.imagePath == "" {
-            print("No Image")
-            //coordinateImage = UIImage(named: "placeholder")
-            cell.imageView!.image = UIImage(named: "placeholder")
-            return cell
-        } else if photo.photoImage != nil {
-            print("PhotoImage is not nil")
-            //coordinateImage = photo.photoImage
-            cell.imageView!.image = photo.photoImage
-            return cell
-        } else {
-            print("Photo has an image name, but it has not been downloaded yet.")
-            cell.activityIndicator.startAnimating()
             
-//            if (photo.imagePath == "placeholder") {
-//                photo.photoImage = UIImage(named: "placeholder")
-//                cell.imageView!.image = photo.photoImage
-//                return cell
-//            } else {
+            photo.fetching = true
             
-            PinPhotos.sharedInstance().taskForImage(photo, completionHandler: { (success, errorString) -> Void in
-                if success {
-                    //coordinateImage = photo.photoImage
-                    cell.imageView!.image = photo.photoImage
+            // Set the Photo Image
+            if let imagePath = photo.imagePath where imagePath != "" {
+    
+                if let photoImage = photo.photoImage where imagePath != "placeholder" {
+                    print("Image was found in directory")
+                    cell.imageView!.image = photoImage
                     cell.activityIndicator.stopAnimating()
+                    photo.fetching = false
+                    return cell
                 } else {
-                    // Set up a photo image for showing no photo.
-                    print("No Image: \(errorString)")
-                    //coordinateImage = UIImage(named: "placeholder")
-                    cell.imageView!.image = UIImage(named: "placeholder")
-                    cell.activityIndicator.stopAnimating()
+                    print("Downloading image.")
+                    
+                    PinPhotos.sharedInstance().taskForImage(photo) { (success, errorString) -> Void in
+                        
+                        if success {
+                            
+                            photo.fetching = false
+                            dispatch_async(dispatch_get_main_queue()) {
+                                cell.imageView!.image = photo.photoImage
+                                cell.activityIndicator.stopAnimating()
+                            }
+                        } else {
+                            photo.fetching = false
+                            // Set up a photo image for showing no photo.
+                            print("No Image: \(errorString)")
+                            dispatch_async(dispatch_get_main_queue()) {
+                                cell.activityIndicator.stopAnimating()
+                            }
+                        }
+                    }
                 }
-            })
-            //}
-            
-            //            print(photo.imagePath)
-            //            let imageURL = NSURL(string: photo.imagePath!)
-            //
-            //            if let imageData = NSData(contentsOfURL: imageURL!) {
-            //                print("Got imageDate from imageURL")
-            //                photo.photoImage = UIImage(data: imageData)
-            //                // IMPORTANT: uncomment this after placeholders are working
-            //                //coordinateImage = photo.photoImage
-            //            }
+            } else {
+                print("Image doesn't exist anywhere.")
+            }
         }
         
-        //cell.imageView!.image = coordinateImage
-        }
-        
-        cell.activityIndicator.stopAnimating()
         print("MARK: Ready to return the Cell.")
         return cell
     }
@@ -691,6 +679,11 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
     
     // Remove the photo from the shared context; set image path to nil.
     func removePhoto(photo: Photo) {
+        
+        // Prevent deletion before done fetching.
+        if photo.fetching {
+            return
+        }
         
         // Create error variable.
         var error: NSError? = nil

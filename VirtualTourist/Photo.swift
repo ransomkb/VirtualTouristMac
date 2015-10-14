@@ -25,6 +25,7 @@ class Photo: NSManagedObject {
     @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
     
+    var fetching = false
     
     // Computed property for accessing photos in caches
     var photoImage: UIImage? {

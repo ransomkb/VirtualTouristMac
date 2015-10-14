@@ -328,30 +328,34 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     // Create a task for retrieving the image data from one of Flickr's servers.
     // Use a completion handler to let it happen on a background thread.
     func taskForImage(photo: Photo, completionHandler: (success: Bool, errorString: String?) -> Void) {
-        print("Starting Image Task")
         
-        print("Photo image path: \(photo.imagePath)")
-        
-        // Create the string of the url from the base url and the escaped parameters.
-        let urlString = API.BASE + photo.imagePath!
-        print("URL String: \(urlString)")
-        let imageURL = NSURL(string: urlString)
-        
-        if let imageData = NSData(contentsOfURL: imageURL!) {
-            print("Got imageData from imageURL")
-            photo.photoImage = UIImage(data: imageData)
-            // IMPORTANT: uncomment this after placeholders are working
-            //coordinateImage = photo.photoImage
+        // Fetch photos on a background queue.
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+            print("Starting Image Task")
             
-            // Report success.
-            completionHandler(success: true, errorString: nil)
-        } else {
-            // Create string to explain that there is no key called pages in the json dictionary.
-            let eString = "Can't retrieve a image data from image url."
-            print(eString)
+            print("Photo image path: \(photo.imagePath)")
             
-            // Report failure and error details.
-            completionHandler(success: false, errorString: eString)
+            // Create the string of the url from the base url and the escaped parameters.
+            let urlString = API.BASE + photo.imagePath!
+            print("URL String: \(urlString)")
+            let imageURL = NSURL(string: urlString)
+            
+            if let imageData = NSData(contentsOfURL: imageURL!) {
+                print("Got imageData from imageURL")
+                photo.photoImage = UIImage(data: imageData)
+                // IMPORTANT: uncomment this after placeholders are working
+                //coordinateImage = photo.photoImage
+                
+                // Report success.
+                completionHandler(success: true, errorString: nil)
+            } else {
+                // Create string to explain that there is no key called pages in the json dictionary.
+                let eString = "Can't retrieve a image data from image url."
+                print(eString)
+                
+                // Report failure and error details.
+                completionHandler(success: false, errorString: eString)
+            }
         }
     }
     
