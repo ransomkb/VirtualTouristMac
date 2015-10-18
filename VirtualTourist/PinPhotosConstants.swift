@@ -38,5 +38,14 @@ extension PinPhotos {
         static let ID = "id"
         static let Title = "title"
         static let ErrorStatusMessage = "status_message"
+        static let MethodKey = "method"
+        static let Api_KeyKey = "api_key"
+        static let Safe_SearchKey = "safe_search"
+        static let ExtrasKey = "extras"
+        static let FormatKey = "format"
+        static let NojsonCallBackKey = "nojsoncallback"
+        static let Per_PageKey = "per_page"
+        static let BBoxKey = "bbox"
+        static let PageKey = "page"
     }
 }

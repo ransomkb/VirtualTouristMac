@@ -34,6 +34,18 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         return CoreDataStackManager.sharedInstance().managedObjectContext
     }
     
+    var methodArguments: [String: AnyObject] {
+    return [
+        PinPhotos.Keys.MethodKey: PinPhotos.API.METHOD_NAME,
+        PinPhotos.Keys.Api_KeyKey: PinPhotos.API.API_KEY,
+        PinPhotos.Keys.Safe_SearchKey: PinPhotos.API.SAFE_SEARCH,
+        PinPhotos.Keys.ExtrasKey: PinPhotos.API.EXTRAS,
+        PinPhotos.Keys.FormatKey: PinPhotos.API.DATA_FORMAT,
+        PinPhotos.Keys.NojsonCallBackKey: PinPhotos.API.NO_JSON_CALLBACK,
+        PinPhotos.Keys.Per_PageKey: PinPhotos.API.PerPage
+    ]}
+
+    
     // Lazy computed property returning a fetched results controller for Pin entities sorted by longitude.
     lazy var pinFetchedResultsController: NSFetchedResultsController = {
         
@@ -87,22 +99,25 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         //println("Photos in fetched objects get album start: \(fetchedResultsController.fetchedObjects!.count)")
         
         // Create the dictionary of arguments for request with BBox from Pin.
-        let methodArguments: [String: AnyObject] = [
-            "method": PinPhotos.API.METHOD_NAME,
-            "api_key": PinPhotos.API.API_KEY,
-            "bbox": createBoundingBoxString(pin),
-            "safe_search": PinPhotos.API.SAFE_SEARCH,
-            "extras": PinPhotos.API.EXTRAS,
-            "format": PinPhotos.API.DATA_FORMAT,
-            "nojsoncallback": PinPhotos.API.NO_JSON_CALLBACK,
-            "per_page": PinPhotos.API.PerPage
-        ]
+//        let methodArguments: [String: AnyObject] = [
+//            "method": PinPhotos.API.METHOD_NAME,
+//            "api_key": PinPhotos.API.API_KEY,
+//            "bbox": createBoundingBoxString(pin),
+//            "safe_search": PinPhotos.API.SAFE_SEARCH,
+//            "extras": PinPhotos.API.EXTRAS,
+//            "format": PinPhotos.API.DATA_FORMAT,
+//            "nojsoncallback": PinPhotos.API.NO_JSON_CALLBACK,
+//            "per_page": PinPhotos.API.PerPage
+//        ]
+        // Create a new argument dictionary with additional key called page to limit number of photos returned.
+        var withPageDictionary: [String:AnyObject] = methodArguments
+        withPageDictionary[PinPhotos.Keys.BBoxKey] = createBoundingBoxString(pin) as String
         
         print("Getting a page number.")
         
         // Assign a search task using request arguments.
         // Use a completion handler to return the parsed json results.
-        self.searchTask = PinPhotos.sharedInstance().taskForResource(methodArguments, completionHandler: { (parsedResult, error) -> Void in
+        self.searchTask = PinPhotos.sharedInstance().taskForResource(withPageDictionary, completionHandler: { (parsedResult, error) -> Void in
             
             // Handle the error case
             if let error = error {
@@ -165,16 +180,16 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     func getPhotosForAlbum(hostViewController: UIViewController, pin: Pin, completionHandler: (success: Bool, errorString: String?) -> Void) {
         
         // Create the dictionary of arguments for request with BBox from Pin.
-        let methodArguments: [String: AnyObject] = [
-            "method": PinPhotos.API.METHOD_NAME,
-            "api_key": PinPhotos.API.API_KEY,
-            "bbox": createBoundingBoxString(pin),
-            "safe_search": PinPhotos.API.SAFE_SEARCH,
-            "extras": PinPhotos.API.EXTRAS,
-            "format": PinPhotos.API.DATA_FORMAT,
-            "nojsoncallback": PinPhotos.API.NO_JSON_CALLBACK,
-            "per_page": PinPhotos.API.PerPage
-        ]
+//        let methodArguments: [String: AnyObject] = [
+//            "method": PinPhotos.API.METHOD_NAME,
+//            "api_key": PinPhotos.API.API_KEY,
+//            "bbox": createBoundingBoxString(pin),
+//            "safe_search": PinPhotos.API.SAFE_SEARCH,
+//            "extras": PinPhotos.API.EXTRAS,
+//            "format": PinPhotos.API.DATA_FORMAT,
+//            "nojsoncallback": PinPhotos.API.NO_JSON_CALLBACK,
+//            "per_page": PinPhotos.API.PerPage
+//        ]
         
         // Return an integer generated randomly from the total number of pages.
         let page = self.randomPageGenerator()
@@ -183,7 +198,8 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
         
         // Create a new argument dictionary with additional key called page to limit number of photos returned.
         var withPageDictionary: [String:AnyObject] = methodArguments
-        withPageDictionary["page"] = "\(page)"
+        withPageDictionary[PinPhotos.Keys.BBoxKey] = createBoundingBoxString(pin) as String
+        withPageDictionary[PinPhotos.Keys.PageKey] = "\(page)"
         
         // Assign a search task using request arguments.
         // Use a completion handler to return the parsed json results.

@@ -254,9 +254,6 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             if success {
                 print("Getting album photo succeeded. Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
                 
-                // Save the changes.
-                //CoreDataStackManager.sharedInstance().saveContext()
-                
                 // Reveal the New Collection button.
                 self.newCollectionButton.hidden = false
             } else {
