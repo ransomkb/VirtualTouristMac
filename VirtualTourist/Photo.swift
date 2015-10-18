@@ -31,17 +31,18 @@ class Photo: NSManagedObject {
     var photoImage: UIImage? {
         get {
             print("Getting image at imagePath: \(imagePath)")
-            
+            let identifier = NSURL(string: imagePath!)?.lastPathComponent
             // Return a cached image stored under the imagePath.
-            return PinPhotos.Caches.imageCache.imageWithIdentifier(imagePath)
+            return PinPhotos.Caches.imageCache.imageWithIdentifier(identifier)
         }
         
         set {
             print("Storing image at imagePath: \(imagePath)")
-            
+            let identifier = NSURL(string: imagePath!)?.lastPathComponent
             // Store or update the image in the cache under the imagePath.
-            PinPhotos.Caches.imageCache.storeImage(newValue, withIdentifier: imagePath!)
+            PinPhotos.Caches.imageCache.storeImage(newValue, withIdentifier: identifier!)
         }
+
     }
 
     

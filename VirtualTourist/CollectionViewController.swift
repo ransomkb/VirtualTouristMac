@@ -255,7 +255,7 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
                 print("Getting album photo succeeded. Photos in fetched objects: \(self.fetchedResultsController.fetchedObjects!.count)")
                 
                 // Save the changes.
-                CoreDataStackManager.sharedInstance().saveContext()
+                //CoreDataStackManager.sharedInstance().saveContext()
                 
                 // Reveal the New Collection button.
                 self.newCollectionButton.hidden = false
@@ -306,11 +306,13 @@ class CollectionViewController: UIViewController, UICollectionViewDataSource, UI
             } else {
                 print("Downloading image.")
                 
-                PinPhotos.sharedInstance().taskForImage(photo) { (success, errorString) -> Void in
+                PinPhotos.sharedInstance().taskForImage(photo.imagePath!) { (success, imageData, errorString) -> Void in
                     
                     if success {
                         photo.fetching = false
                         dispatch_async(dispatch_get_main_queue()) {
+                            print("Got imageData from imageURL")
+                            photo.photoImage = UIImage(data: imageData!)
                             cell.imageView!.image = photo.photoImage
                             cell.activityIndicator.stopAnimating()
                         }

@@ -223,16 +223,25 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
                         
                         print("Creating array of Photo entities from photo dictionary: \(photosArray)")
                         
-                        // Create a Photo class and entity value for each photo in the array using its dictionary.
-                        _ = photosArray.map() {(dictionary: [String : AnyObject]) -> Photo in
-                            let photo = Photo(dictionary: dictionary, context: self.sharedContext)
+                        // Get Main Queue for context.
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            // Create a Photo class and entity value for each photo in the array using its dictionary.
+                            _ = photosArray.map() {(dictionary: [String : AnyObject]) -> Photo in
+                                let photo = Photo(dictionary: dictionary, context: self.sharedContext)
+                                
+                                // Set the pin variable in photo to that passed through this function.
+                                photo.pin = pin
+                                print("Photo image path: \(photo.imagePath)")
+                                return photo
+                            }
                             
-                            // Set the pin variable in photo to that passed through this function.
-                            photo.pin = pin
-                            print("Photo image path: \(photo.imagePath)")
-                            return photo
-                        }
-                        
+                            do {
+                                try self.sharedContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
+                        })
+                                                
                         // Report success in getting photos from flickr and creating photo instances for Core Data.
                         completionHandler(success: true, errorString: nil)
                     } else {
@@ -292,32 +301,29 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     
     // Create a task for retrieving the image data from one of Flickr's servers.
     // Use a completion handler to let it happen on a background thread.
-    func taskForImage(photo: Photo, completionHandler: (success: Bool, errorString: String?) -> Void) {
+    func taskForImage(imagePath: String, completionHandler: (success: Bool, imageData: NSData?, errorString: String?) -> Void) {
         
         // Fetch photos on a background queue.
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
             print("Starting Image Task")
             
-            print("Photo image path: \(photo.imagePath)")
+            print("Photo image path: \(imagePath)")
             
             // Create the string of the url from the base url and the escaped parameters.
-            let urlString = API.BASE + photo.imagePath!
+            let urlString = API.BASE + imagePath
             print("URL String: \(urlString)")
             let imageURL = NSURL(string: urlString)
             
             if let imageData = NSData(contentsOfURL: imageURL!) {
-                print("Got imageData from imageURL")
-                photo.photoImage = UIImage(data: imageData)
-                
-                // Report success.
-                completionHandler(success: true, errorString: nil)
+                                // Report success.
+                completionHandler(success: true, imageData:imageData, errorString: nil)
             } else {
                 // Create string to explain that there is no key called pages in the json dictionary.
                 let eString = "Can't retrieve a image data from image url."
                 print(eString)
                 
                 // Report failure and error details.
-                completionHandler(success: false, errorString: eString)
+                completionHandler(success: false, imageData:nil, errorString: eString)
             }
         }
     }
