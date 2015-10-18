@@ -97,18 +97,7 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     func getTotalPhotos(hostViewController: UIViewController, pin: Pin, completionHandler: (success: Bool, errorString: String?) -> Void) {
         
         //println("Photos in fetched objects get album start: \(fetchedResultsController.fetchedObjects!.count)")
-        
-        // Create the dictionary of arguments for request with BBox from Pin.
-//        let methodArguments: [String: AnyObject] = [
-//            "method": PinPhotos.API.METHOD_NAME,
-//            "api_key": PinPhotos.API.API_KEY,
-//            "bbox": createBoundingBoxString(pin),
-//            "safe_search": PinPhotos.API.SAFE_SEARCH,
-//            "extras": PinPhotos.API.EXTRAS,
-//            "format": PinPhotos.API.DATA_FORMAT,
-//            "nojsoncallback": PinPhotos.API.NO_JSON_CALLBACK,
-//            "per_page": PinPhotos.API.PerPage
-//        ]
+      
         // Create a new argument dictionary with additional key called page to limit number of photos returned.
         var withPageDictionary: [String:AnyObject] = methodArguments
         withPageDictionary[PinPhotos.Keys.BBoxKey] = createBoundingBoxString(pin) as String
@@ -178,18 +167,6 @@ class PinPhotos: NSObject, NSFetchedResultsControllerDelegate {
     // Get the photos on Flickr for a Pin, using its longitude and latitude, to be used in an album.
     // Report success with a completion handler.
     func getPhotosForAlbum(hostViewController: UIViewController, pin: Pin, completionHandler: (success: Bool, errorString: String?) -> Void) {
-        
-        // Create the dictionary of arguments for request with BBox from Pin.
-//        let methodArguments: [String: AnyObject] = [
-//            "method": PinPhotos.API.METHOD_NAME,
-//            "api_key": PinPhotos.API.API_KEY,
-//            "bbox": createBoundingBoxString(pin),
-//            "safe_search": PinPhotos.API.SAFE_SEARCH,
-//            "extras": PinPhotos.API.EXTRAS,
-//            "format": PinPhotos.API.DATA_FORMAT,
-//            "nojsoncallback": PinPhotos.API.NO_JSON_CALLBACK,
-//            "per_page": PinPhotos.API.PerPage
-//        ]
         
         // Return an integer generated randomly from the total number of pages.
         let page = self.randomPageGenerator()
