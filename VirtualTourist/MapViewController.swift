@@ -98,7 +98,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate,  NSFetched
         mapView.addGestureRecognizer(longPress)
         
         // Add an observer for the zoom settings to the notification center.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveRegion", name: "saveData", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MapViewController.saveRegion), name: "saveData", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
